@@ -1,11 +1,17 @@
 {
   "resources": {
+    "shaders": {
+      "path": "resources/shaders/textured_model.glsl"
+    },
     "models": {
+      "ferrari": {
+        "path": "resources/models/ferrari/Testarossa.obj"
+      }
     }
   },
   "window": {
     "height": 600,
-    "title": "Hello, window!",
+    "title": "Vice City Ferrari Scene",
     "width": 800
   }
 }
