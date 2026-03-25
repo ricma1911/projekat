@@ -1,7 +1,9 @@
 {
     "resources": {
         "shaders": {
-            "path": "textured_model.glsl"
+            "textured_model_shader": {
+                "path": "resources/shaders/textured_model.glsl"
+            }
         },
         "models": {
             "ferrari": {
