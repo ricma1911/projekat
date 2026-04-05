@@ -14,6 +14,10 @@ public:
 private:
     void initialize() override;
     bool loop() override;
+    void draw_car();
+    void begin_draw() override;
+    void draw() override;
+    void end_draw() override;
 };
 
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
