@@ -2,7 +2,7 @@
   "resources": {
     "shaders": {
       "textured_model": {
-        "path": "resources/shaders/textured_model.glsl"
+        "path": "shaders/textured_model.glsl"
       }
     },
     "models": {
