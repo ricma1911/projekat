@@ -1,0 +1,143 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl Vehicle_Exterior_mm_badges
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_badges_baseColor.png
+map_d Vehicle_Exterior_mm_badges_baseColor.png
+
+newmtl Vehicle_Exterior_mm_cab
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_cab_baseColor.png
+
+newmtl Vehicle_Exterior_mm_chassis
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_chassis_baseColor.png
+
+newmtl Vehicle_Exterior_mm_ext
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.000000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_ext_baseColor.png
+
+newmtl Vehicle_Exterior_mm_lights
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_lights_baseColor.png
+
+newmtl Vehicle_Exterior_mm_misc
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_misc_baseColor.png
+
+newmtl Vehicle_Exterior_mm_rotor
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_rotor_baseColor.png
+
+newmtl Vehicle_Exterior_mm_tyre
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_tyre_baseColor.png
+
+newmtl Vehicle_Exterior_mm_wheel
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+map_Kd Vehicle_Exterior_mm_wheel_baseColor.png
+
+newmtl Vehicle_Exterior_mm_windows
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 0.250000
+illum 6
+Pr 1.000000
+Pm 1.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+
+Tf 1.000000 1.000000 1.000000

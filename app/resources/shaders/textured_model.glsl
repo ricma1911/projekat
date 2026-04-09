@@ -31,5 +31,6 @@ in vec2 TexCoords;
 uniform sampler2D texture_diffuse1;
 
 void main() {
-    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
+    vec2 flippedUV = vec2(TexCoords.x, 1.0 - TexCoords.y);
+    FragColor = vec4(texture(texture_diffuse1, flippedUV).rgb, 1.0);
 }
