@@ -141,3 +141,5 @@ Pc 0.000000
 Pcr 0.030000
 
 Tf 1.000000 1.000000 1.000000
+
+map_Kd white_texture.png
