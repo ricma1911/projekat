@@ -27,6 +27,34 @@ bool MainController::loop() {
     return true;
 }
 
+void MainController::update_camera() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    auto dt = platform->dt();
+    auto camera = graphics->camera();
+    if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+    }
+
+    if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
+    }
+
+    if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
+    }
+
+    if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
+    }
+
+}
+
+void MainController::update() {
+    update_camera();
+}
+
 void MainController::draw_car() {
     spdlog::debug("MainController::draw_car()");
     //Treba nam model

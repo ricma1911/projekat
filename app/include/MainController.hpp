@@ -14,6 +14,8 @@ public:
 private:
     void initialize() override;
     bool loop() override;
+    void update_camera();
+    void update() override;
     void draw_car();
     void begin_draw() override;
     void draw() override;
