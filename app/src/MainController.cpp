@@ -11,10 +11,21 @@
 
 #include <engine/platform/PlatformController.hpp>
 
+class MainPlatformEvenetObserver : public engine::platform::PlatformEventObserver {
+public:
+    void on_mouse_move(engine::platform::MousePosition position) override;
+};
+
+void MainPlatformEvenetObserver::on_mouse_move(engine::platform::MousePosition position) {
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    camera->rotate_camera(position.dx, position.dy);
+}
 std::string_view MainController::name() const {
     return "App::MainController";
 }
 void MainController::initialize() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    platform->register_platform_event_observer(std::make_unique<MainPlatformEvenetObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
 }
 
