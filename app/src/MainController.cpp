@@ -86,6 +86,12 @@ void MainController::draw_car() {
     car->draw(shader);
 }
 
+void MainController::draw_skybox() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+    auto skybox = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
+    engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox);
+}
+
 void MainController::begin_draw() {
     spdlog::debug("MainController::begin_draw()");
     engine::graphics::OpenGL::clear_buffers();
@@ -95,6 +101,7 @@ void MainController::begin_draw() {
 void MainController::draw() {
     spdlog::debug("MainController::draw()");
     draw_car();
+    draw_skybox();
 }
 
 
