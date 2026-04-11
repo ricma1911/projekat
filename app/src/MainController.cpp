@@ -97,11 +97,22 @@ void MainController::draw_side_objects() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -2.5f, -5.0f));
-    shader->set_mat4("model", model);
 
-    side_objects->draw(shader);
+    glm::vec3 positions[] = {
+        glm::vec3(-5.0f, -2.5f, -5.0f),
+        glm::vec3( 5.0f, -2.5f, -5.0f),
+        glm::vec3(-5.0f, -2.5f, -15.0f),
+        glm::vec3( 5.0f, -2.5f, -15.0f)
+    };
+
+    for (int i = 0; i < 4; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(positions[i]));
+
+        shader->set_mat4("model", model);
+        side_objects->draw(shader);
+    }
+
 }
 
 void MainController::draw_skybox() {
