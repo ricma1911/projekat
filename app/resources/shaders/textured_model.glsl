@@ -31,8 +31,7 @@ in vec2 TexCoords;
 uniform sampler2D texture_diffuse1;
 
 void main() {
-    vec2 flippedUV = vec2(TexCoords.x, 1.0 - TexCoords.y);
-    vec3 color = texture(texture_diffuse1, flippedUV).rgb;
+    vec3 color = texture(texture_diffuse1, TexCoords).rgb;
 
     if (color.r > 0.99f && color.g > 0.99f && color.b > 0.99f) {
         //Discard every other fragment, when color is white(windows)

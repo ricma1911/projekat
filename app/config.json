@@ -3,7 +3,9 @@
 
     "models": {
       "ferrari": {
-        "path": "ferrari/Testarossa.obj"
+        "path": "ferrari/Testarossa.obj",
+        "flip_uvs": true
+
       }
     }
   },
