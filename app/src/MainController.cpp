@@ -72,7 +72,7 @@ void MainController::draw_car() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     engine::resources::Model* car = resources->model("ferrari");
     //Treba nam shader
-    engine::resources::Shader* shader = resources->shader("textured_model");
+    engine::resources::Shader* shader = resources->shader("car");
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     shader->use();

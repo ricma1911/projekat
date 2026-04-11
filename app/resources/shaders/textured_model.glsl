@@ -33,10 +33,5 @@ uniform sampler2D texture_diffuse1;
 void main() {
     vec3 color = texture(texture_diffuse1, TexCoords).rgb;
 
-    if (color.r > 0.99f && color.g > 0.99f && color.b > 0.99f) {
-        //Discard every other fragment, when color is white(windows)
-        if (int(gl_FragCoord.x + gl_FragCoord.y) % 2 == 0)
-            discard;
-    }
     FragColor = vec4(color, 1.0);
 }
