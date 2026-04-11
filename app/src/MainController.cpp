@@ -86,6 +86,24 @@ void MainController::draw_car() {
     car->draw(shader);
 }
 
+void MainController::draw_side_objects() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Model* side_objects = resources->model("palm");
+
+
+    engine::resources::Shader* shader = resources->shader("textured_model");
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -2.5f, -5.0f));
+    shader->set_mat4("model", model);
+
+    side_objects->draw(shader);
+}
+
 void MainController::draw_skybox() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
     auto skybox = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
@@ -101,6 +119,7 @@ void MainController::begin_draw() {
 void MainController::draw() {
     spdlog::debug("MainController::draw()");
     draw_car();
+    draw_side_objects();
     draw_skybox();
 }
 

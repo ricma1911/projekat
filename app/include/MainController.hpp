@@ -17,6 +17,7 @@ private:
     void update_camera();
     void update() override;
     void draw_car();
+    void draw_side_objects();
     void draw_skybox();
     void begin_draw() override;
     void draw() override;
