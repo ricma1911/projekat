@@ -6,6 +6,9 @@
         "path": "ferrari/Testarossa.obj",
         "flip_uvs": true
 
+      },
+      "palm": {
+        "path": "palm_tree/palm.obj"
       }
     }
   },

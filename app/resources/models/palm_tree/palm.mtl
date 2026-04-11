@@ -1,0 +1,35 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl PalmLeaf
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd PalmLeaf_baseColor.jpeg
+map_Bump -bm 1.000000 PalmLeaf_normal.png
+
+newmtl coconut
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd coconut_baseColor.jpeg
+map_Bump -bm 1.000000 coconut_normal.png
+
+newmtl palmTree_M
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd palmTree_M_baseColor.jpeg
+map_Bump -bm 1.000000 palmTree_M_normal.png
