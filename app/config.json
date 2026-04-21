@@ -9,6 +9,9 @@
       },
       "palm": {
         "path": "palm_tree/palm.obj"
+      },
+      "plane": {
+          "path": "plane/plane.obj"
       }
     }
   },
