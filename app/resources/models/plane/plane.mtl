@@ -1,0 +1,6 @@
+newmtl plane_material
+    ka 1.0 1.0 1.0
+    kd 1.0 1.0 1.0
+    ks 0.0 0.0 0.0
+    ns 10.0
+map_Kd asphalt.jpg
