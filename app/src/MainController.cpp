@@ -79,7 +79,7 @@ void MainController::draw_car() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -0.5f, -3.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
 
@@ -99,10 +99,10 @@ void MainController::draw_side_objects() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
     glm::vec3 positions[] = {
-        glm::vec3(-5.0f, -2.5f, -5.0f),
-        glm::vec3( 5.0f, -2.5f, -5.0f),
-        glm::vec3(-5.0f, -2.5f, -15.0f),
-        glm::vec3( 5.0f, -2.5f, -15.0f)
+        glm::vec3(-2.0f, -1.6f, -17.0f),
+        glm::vec3( 2.0f, -1.6f, -17.0f),
+        glm::vec3(-2.0f, -1.6f, -13.0f),
+        glm::vec3( 2.0f, -1.6f, -13.0f)
     };
 
     for (int i = 0; i < 4; i++) {
@@ -125,8 +125,8 @@ void MainController::draw_platform() {
     shader->use();
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -2.6f, -20.0f));
-    model = glm::scale(model, glm::vec3(5.0f, 1.0f, 10.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
+    model = glm::scale(model, glm::vec3(3.5f, 1.0f, 3.5f));
 
     shader->set_mat4("model", model);
     shader->set_mat4("projection", graphics->projection_matrix());
