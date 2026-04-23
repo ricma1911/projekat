@@ -12,6 +12,9 @@
       },
       "plane": {
           "path": "plane/plane.obj"
+      },
+      "street_lamp": {
+        "path": "street_lamp/street_lamp.obj"
       }
     }
   },

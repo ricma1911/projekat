@@ -115,6 +115,26 @@ void MainController::draw_side_objects() {
 
 }
 
+void MainController::draw_steet_lamp() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model* street_lamp = resources->model("street_lamp");
+    engine::resources::Shader* shader = resources->shader("textured_model");
+
+    shader->use();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -2.5f, -16.0f));
+    model = glm::scale(model, glm::vec3(0.1f));
+
+    shader->set_mat4("model", model);
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    street_lamp->draw(shader);
+}
+
 void MainController::draw_platform() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -151,6 +171,7 @@ void MainController::draw() {
     spdlog::debug("MainController::draw()");
     draw_car();
     draw_side_objects();
+    draw_steet_lamp();
     draw_skybox();
     draw_platform();
 }

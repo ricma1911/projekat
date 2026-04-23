@@ -18,6 +18,7 @@ private:
     void update() override;
     void draw_car();
     void draw_side_objects();
+    void draw_steet_lamp();
     void draw_platform();
     void draw_skybox();
     void begin_draw() override;
