@@ -135,6 +135,34 @@ void MainController::draw_steet_lamp() {
     street_lamp->draw(shader);
 }
 
+void MainController::draw_point_lamps() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model* point_lamp = resources->model("point_lamp"); //I need model
+    engine::resources::Shader* shader = resources->shader("textured_model"); //I need shader
+
+    shader->use();
+
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::vec3 positions[] = {
+        glm::vec3(2.5f, -1.5f, -15.0f),
+        glm::vec3(-2.5f, -1.5f, -15.0f)
+    };
+
+    for (int i = 0; i < 2; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(positions[i]));
+
+        shader->set_mat4("model", model);
+        point_lamp->draw(shader);
+    }
+
+}
+
+
 void MainController::draw_platform() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -172,6 +200,7 @@ void MainController::draw() {
     draw_car();
     draw_side_objects();
     draw_steet_lamp();
+    draw_point_lamps();
     draw_skybox();
     draw_platform();
 }
