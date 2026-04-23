@@ -29,6 +29,8 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
+uniform vec3 globalAmbient; //One color for the whole scene
+
 
 void main() {
     vec3 color = texture(texture_diffuse1, TexCoords).rgb;
@@ -38,5 +40,6 @@ void main() {
         if (int(gl_FragCoord.x + gl_FragCoord.y) % 2 == 0)
             discard;
     }
-    FragColor = vec4(color, 1.0);
+    vec3 result = color * globalAmbient;
+    FragColor = vec4(result, 1.0);
 }

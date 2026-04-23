@@ -82,6 +82,7 @@ void MainController::draw_car() {
     model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
 
     car->draw(shader);
 }
@@ -97,6 +98,7 @@ void MainController::draw_side_objects() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
 
     glm::vec3 positions[] = {
         glm::vec3(-2.0f, -1.6f, -17.0f),
@@ -128,6 +130,7 @@ void MainController::draw_steet_lamp() {
     model = glm::translate(model, glm::vec3(0.0f, -2.5f, -16.0f));
     model = glm::scale(model, glm::vec3(0.1f));
 
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
     shader->set_mat4("model", model);
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -146,6 +149,8 @@ void MainController::draw_point_lamps() {
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+
 
     glm::vec3 positions[] = {
         glm::vec3(2.5f, -1.5f, -15.0f),
@@ -179,6 +184,8 @@ void MainController::draw_platform() {
     shader->set_mat4("model", model);
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+
 
     plane->draw(shader);
 
