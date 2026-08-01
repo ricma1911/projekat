@@ -99,6 +99,7 @@ void MainController::draw_side_objects() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_bool("useEmissive", false);
 
     glm::vec3 positions[] = {
         glm::vec3(-2.0f, -1.6f, -17.0f),
@@ -134,6 +135,8 @@ void MainController::draw_steet_lamp() {
     shader->set_mat4("model", model);
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_bool("useEmissive", true);
+
 
     street_lamp->draw(shader);
 }
@@ -150,6 +153,8 @@ void MainController::draw_point_lamps() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_bool("useEmissive", true);
+
 
 
     glm::vec3 positions[] = {
@@ -185,6 +190,8 @@ void MainController::draw_platform() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_bool("useEmissive", false);
+
 
 
     plane->draw(shader);
