@@ -13,9 +13,6 @@
       "plane": {
           "path": "plane/plane.obj"
       },
-      "street_lamp": {
-        "path": "street_lamp/street_lamp.obj"
-      },
       "point_lamp": {
         "path": "point_lamp/point_lamp.obj",
         "flip_uvs": true
