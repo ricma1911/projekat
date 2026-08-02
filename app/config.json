@@ -13,6 +13,9 @@
       "plane": {
           "path": "plane/plane.obj"
       },
+      "bulb": {
+        "path": "street_lamp/bulb.obj"
+      },
       "street_lamp": {
         "path": "street_lamp/streetlamp.obj"
       },

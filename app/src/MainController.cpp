@@ -123,23 +123,40 @@ void MainController::draw_street_lamp() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
     engine::resources::Model* street_lamp = resources->model("street_lamp");
-    engine::resources::Shader* shader = resources->shader("textured_model");
+    engine::resources::Model* bulb = resources->model("bulb");
 
-    shader->use();
+    engine::resources::Shader* textured_shader = resources->shader("textured_model");
+    textured_shader->use();
 
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
-    shader->set_bool("useEmissive", false);
+    textured_shader->set_mat4("projection", graphics->projection_matrix());
+    textured_shader->set_mat4("view", graphics->camera()->view_matrix());
+    textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    textured_shader->set_bool("useEmissive", false);
+
+    glm::vec3 lamp_pos = glm::vec3(0.0f, -2.5f, -16.5f);
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0, -2.5f, -16.5f));
+    model = glm::translate(model, lamp_pos);
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.0175f, 0.0175f, 0.0175f));
 
+    textured_shader->set_mat4("model", model);
+    street_lamp->draw(textured_shader);
 
-    shader->set_mat4("model", model);
-    street_lamp->draw(shader);
+    engine::resources::Shader* one_color_shader = resources->shader("one_color");
+    one_color_shader->use();
+
+    one_color_shader->set_mat4("projection", graphics->projection_matrix());
+    one_color_shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 bulb_model = glm::mat4(1.0f);
+    bulb_model = glm::translate(bulb_model, lamp_pos + glm::vec3(0.22f, 1.57f, 0.35f));
+    bulb_model = glm::scale(bulb_model, glm::vec3(0.33f, 0.17f, 0.33f));
+
+    one_color_shader->set_mat4("model", bulb_model);
+    one_color_shader->set_vec3("color", glm::vec3(0.0f, 0.94f, 1.0f));
+
+    bulb->draw(one_color_shader);
 }
 
 
