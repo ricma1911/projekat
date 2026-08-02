@@ -74,7 +74,7 @@ void MainController::setup_spot_light(engine::resources::Shader* shader) {
 
     shader->set_vec3("spotLight.position", bulb_world_pos);
     shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    shader->set_vec3("spotLight.color", glm::vec3(0.0f, 0.94f, 1.0f));
+    shader->set_vec3("spotLight.color", glm::vec3(3.0f) * glm::vec3(0.0f, 0.94f, 1.0f));
 
     shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
@@ -82,6 +82,22 @@ void MainController::setup_spot_light(engine::resources::Shader* shader) {
     shader->set_float("spotLight.constant", 0.3f);
     shader->set_float("spotLight.linear", 0.0001f);
     shader->set_float("spotLight.quadratic", 0.0005f);
+}
+
+void MainController::setup_point_lights(engine::resources::Shader* shader) {
+    shader->use();
+
+    shader->set_vec3("pointLights[0].position", glm::vec3(-2.5f, -1.5f, -15.0f));
+    shader->set_vec3("pointLights[0].color", glm::vec3(3.0f) * glm::vec3(1.0f, 0.5f, 0.0f));
+    shader->set_float("pointLights[0].constant", 0.05f);
+    shader->set_float("pointLights[0].linear", 0.09f);
+    shader->set_float("pointLights[0].quadratic", 0.032f);
+
+    shader->set_vec3("pointLights[1].position",glm::vec3(2.5f, -1.5f, -15.0f));
+    shader->set_vec3("pointLights[1].color", glm::vec3(3.0f) * glm::vec3(1.0f, 0.0f, 0.8f));
+    shader->set_float("pointLights[1].constant", 0.05f);
+    shader->set_float("pointLights[1].linear", 0.09f);
+    shader->set_float("pointLights[1].quadratic", 0.032f);
 }
 
 void MainController::draw_car() {
@@ -254,10 +270,15 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     spdlog::debug("MainController::draw()");
+
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
     setup_spot_light(resources->shader("car"));
     setup_spot_light(resources->shader("textured_model"));
+
+    setup_point_lights(resources->shader("car"));
+    setup_point_lights(resources->shader("textured_model"));
+
     draw_car();
     draw_side_objects();
     draw_street_lamp();

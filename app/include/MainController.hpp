@@ -20,6 +20,7 @@ private:
     void update_camera();
     void update() override;
     void setup_spot_light(engine::resources::Shader* shader);
+    void setup_point_lights(engine::resources::Shader* shader);
     void draw_car();
     void draw_side_objects();
     void draw_point_lamps();

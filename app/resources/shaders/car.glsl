@@ -46,9 +46,21 @@ struct SpotLight {
     float quadratic;
 };
 
+struct PointLight {
+    vec3 position;
+    vec3 color;
+
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+#define NR_POINT_LIGHTS 2
 uniform SpotLight spotLight;
+uniform PointLight pointLights[NR_POINT_LIGHTS];
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 
 void main() {
     vec3 color = texture(texture_diffuse1, TexCoords).rgb;
@@ -60,7 +72,12 @@ void main() {
 
     vec3 norm = normalize(Normal);
     vec3 result = color * globalAmbient;
+
     result += color * CalcSpotLight(spotLight, norm, FragPos);
+
+    for(int i = 0; i < NR_POINT_LIGHTS; i++) {
+        result += color * CalcPointLight(pointLights[i], norm, FragPos);
+    }
 
     FragColor = vec4(result, 1.0);
 }
@@ -78,4 +95,14 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos) {
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
     return light.color * diff * intensity * attenuation;
+}
+
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
+    vec3 lightDir = normalize(light.position - fragPos);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+    return light.color * diff * attenuation;
 }
