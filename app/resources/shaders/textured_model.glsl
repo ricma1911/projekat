@@ -32,14 +32,14 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_emissive1;
 uniform vec3 globalAmbient; //One color for the whole scene
 uniform bool useEmissive;
+uniform vec3 emissiveColor;
 
 void main() {
     vec3 color = texture(texture_diffuse1, TexCoords).rgb;
     vec3 result = (color * globalAmbient);
     if (useEmissive) {
         vec3 emissive = texture(texture_emissive1, TexCoords).rgb;
-        vec3 customGlowColor = vec3(3.0, 0.2, 1.5); // Vrednosti preko 1.0 daju "HDR / Bloom" efekat jačine
-        result += emissive * customGlowColor;
+        result += emissive * emissiveColor;
     }
     FragColor = vec4(result, 1.0);
 }

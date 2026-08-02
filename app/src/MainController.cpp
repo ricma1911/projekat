@@ -181,11 +181,17 @@ void MainController::draw_point_lamps() {
         glm::vec3(-2.5f, -1.5f, -15.0f)
     };
 
+    glm::vec3 colors[] = {
+        glm::vec3(1.0f, 0.0f, 0.8f),
+        glm::vec3(1.0f, 0.45f, 0.0f)
+    };
+
     for (int i = 0; i < 2; i++) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(positions[i]));
 
         shader->set_mat4("model", model);
+        shader->set_vec3("emissiveColor", colors[i]);
         point_lamp->draw(shader);
     }
 
