@@ -5,6 +5,9 @@
 #ifndef MATF_RG_PROJECT_MAINCONTROLLER_HPP
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
 
+#include "engine/resources/Shader.hpp"
+
+
 #include <engine/core/Controller.hpp>
 
 class MainController : public engine::core::Controller {
@@ -16,6 +19,7 @@ private:
     bool loop() override;
     void update_camera();
     void update() override;
+    void setup_spot_light(engine::resources::Shader* shader);
     void draw_car();
     void draw_side_objects();
     void draw_point_lamps();

@@ -66,6 +66,24 @@ void MainController::update() {
     update_camera();
 }
 
+void MainController::setup_spot_light(engine::resources::Shader* shader) {
+    shader->use();
+
+    glm::vec3 lamp_pos = glm::vec3(0.0f, -2.5f, -16.5f);
+    glm::vec3 bulb_world_pos = lamp_pos + glm::vec3(0.22f, 1.57f, 0.35f);
+
+    shader->set_vec3("spotLight.position", bulb_world_pos);
+    shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
+    shader->set_vec3("spotLight.color", glm::vec3(0.0f, 0.94f, 1.0f));
+
+    shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
+    shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
+
+    shader->set_float("spotLight.constant", 0.3f);
+    shader->set_float("spotLight.linear", 0.0001f);
+    shader->set_float("spotLight.quadratic", 0.0005f);
+}
+
 void MainController::draw_car() {
     spdlog::debug("MainController::draw_car()");
     //Treba nam model
@@ -236,6 +254,10 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     spdlog::debug("MainController::draw()");
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+    setup_spot_light(resources->shader("car"));
+    setup_spot_light(resources->shader("textured_model"));
     draw_car();
     draw_side_objects();
     draw_street_lamp();

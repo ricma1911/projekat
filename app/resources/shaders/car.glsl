@@ -27,19 +27,55 @@ void main()
 out vec4 FragColor;
 
 in vec2 TexCoords;
+in vec3 Normal;
+in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
-uniform vec3 globalAmbient; //One color for the whole scene
+uniform vec3 globalAmbient;
 
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    vec3 color;
+
+    float cutOff;
+    float outerCutOff;
+
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+uniform SpotLight spotLight;
+
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
 
 void main() {
     vec3 color = texture(texture_diffuse1, TexCoords).rgb;
 
     if (color.r > 0.99f && color.g > 0.99f && color.b > 0.99f) {
-        //Discard every other fragment, when color is white(windows)
         if (int(gl_FragCoord.x + gl_FragCoord.y) % 2 == 0)
-            discard;
+        discard;
     }
+
+    vec3 norm = normalize(Normal);
     vec3 result = color * globalAmbient;
+    result += color * CalcSpotLight(spotLight, norm, FragPos);
+
     FragColor = vec4(result, 1.0);
+}
+
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos) {
+    vec3 lightDir = normalize(light.position - fragPos);
+
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+    return light.color * diff * intensity * attenuation;
 }
