@@ -5,7 +5,10 @@ file(GLOB headers include/*.hpp)
 
 include_directories(include/)
 
-add_executable(${PROJECT_NAME} ${sources} ${headers})
+add_executable(${PROJECT_NAME} ${sources} ${headers}
+        include/WorldSettings.hpp
+        src/WorldSettings.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE matf-rg-engine)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
