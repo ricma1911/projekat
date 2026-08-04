@@ -22,6 +22,10 @@
       "point_lamp": {
         "path": "point_lamp/point_lamp.obj",
         "flip_uvs": true
+      },
+      "lamborghini_aventador": {
+        "path": "lamborghini_aventador/Lamborghini_Aventador.obj",
+        "flip_uvs": true
       }
     }
   },
