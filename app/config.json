@@ -26,6 +26,10 @@
       "lamborghini_aventador": {
         "path": "lamborghini_aventador/Lamborghini_Aventador.obj",
         "flip_uvs": true
+      },
+      "garbage_container": {
+        "path": "garbage_container/garbage_container.obj",
+        "flip_uvs": true
       }
     }
   },
