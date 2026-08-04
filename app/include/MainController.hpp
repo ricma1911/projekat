@@ -15,6 +15,7 @@ public:
     std::string_view name() const override;
 
 private:
+    float m_lightIntensity = 5.0f;
     void initialize() override;
     bool loop() override;
     void update_camera();

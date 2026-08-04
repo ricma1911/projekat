@@ -64,6 +64,19 @@ void MainController::update_camera() {
 
 void MainController::update() {
     update_camera();
+
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    float dt = platform->dt();
+
+    if (platform->key(engine::platform::KeyId::KEY_UP).is_down()) {
+        m_lightIntensity += 5.0f * dt;
+        if (m_lightIntensity > 30.0f) m_lightIntensity = 30.0f;
+    }
+
+    if (platform->key(engine::platform::KeyId::KEY_DOWN).is_down()) {
+        m_lightIntensity -= 5.0f * dt;
+        if (m_lightIntensity < 0.0f) m_lightIntensity = 0.0f;
+    }
 }
 
 void MainController::setup_spot_light(engine::resources::Shader* shader) {
@@ -74,7 +87,7 @@ void MainController::setup_spot_light(engine::resources::Shader* shader) {
 
     shader->set_vec3("spotLight.position", bulb_world_pos);
     shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    shader->set_vec3("spotLight.color", glm::vec3(5.0f) * glm::vec3(0.0f, 0.94f, 1.0f));
+    shader->set_vec3("spotLight.color", glm::vec3(m_lightIntensity) * glm::vec3(0.0f, 0.94f, 1.0f));
 
     shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
@@ -88,13 +101,13 @@ void MainController::setup_point_lights(engine::resources::Shader* shader) {
     shader->use();
 
     shader->set_vec3("pointLights[0].position", glm::vec3(-2.5f, -1.5f, -15.0f));
-    shader->set_vec3("pointLights[0].color", glm::vec3(5.0f) * glm::vec3(1.0f, 0.5f, 0.0f));
+    shader->set_vec3("pointLights[0].color", glm::vec3(m_lightIntensity) * glm::vec3(1.0f, 0.5f, 0.0f));
     shader->set_float("pointLights[0].constant", 0.05f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
 
     shader->set_vec3("pointLights[1].position",glm::vec3(2.5f, -1.5f, -15.0f));
-    shader->set_vec3("pointLights[1].color", glm::vec3(5.0f) * glm::vec3(1.0f, 0.0f, 0.8f));
+    shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * glm::vec3(1.0f, 0.0f, 0.8f));
     shader->set_float("pointLights[1].constant", 0.05f);
     shader->set_float("pointLights[1].linear", 0.09f);
     shader->set_float("pointLights[1].quadratic", 0.032f);
