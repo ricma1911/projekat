@@ -15,10 +15,10 @@ uniform mat4 projection;
 
 void main()
 {
-    FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = aNormal;
-    TexCoords = aTexCoords;
-    gl_Position = projection * view * vec4(FragPos, 1.0);
+FragPos = vec3(model * vec4(aPos, 1.0));
+Normal = mat3(transpose(inverse(model))) * aNormal;
+TexCoords = aTexCoords;
+gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
 //#shader fragment
@@ -37,25 +37,25 @@ uniform bool useEmissive;
 uniform vec3 emissiveColor;
 
 struct SpotLight {
-    vec3 position;
-    vec3 direction;
-    vec3 color;
+vec3 position;
+vec3 direction;
+vec3 color;
 
-    float cutOff;
-    float outerCutOff;
+float cutOff;
+float outerCutOff;
 
-    float constant;
-    float linear;
-    float quadratic;
+float constant;
+float linear;
+float quadratic;
 };
 
 struct PointLight {
-    vec3 position;
-    vec3 color;
+vec3 position;
+vec3 color;
 
-    float constant;
-    float linear;
-    float quadratic;
+float constant;
+float linear;
+float quadratic;
 };
 
 #define NR_POINT_LIGHTS 2
@@ -66,46 +66,54 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 
 void main() {
-    vec3 color = texture(texture_diffuse1, TexCoords).rgb;
-    vec3 norm = normalize(Normal);
+vec3 color = texture(texture_diffuse1, TexCoords).rgb;
+vec3 norm = normalize(Normal);
 
-    vec3 result = color * globalAmbient;
+vec3 result = color * globalAmbient;
 
-    result += color * CalcSpotLight(spotLight, norm, FragPos);
+vec3 spotContrib = color * CalcSpotLight(spotLight, norm, FragPos);
 
-    for(int i = 0; i < NR_POINT_LIGHTS; i++) {
-        result += color * CalcPointLight(pointLights[i], norm, FragPos);
-    }
+vec3 lightDir = normalize(spotLight.position - FragPos);
+float theta = dot(lightDir, normalize(-spotLight.direction));
+float spotMask = clamp((theta - spotLight.outerCutOff) / (spotLight.cutOff - spotLight.outerCutOff), 0.0, 1.0);
 
-    if (useEmissive) {
-        vec3 emissive = texture(texture_emissive1, TexCoords).rgb;
-        result += emissive * emissiveColor;
-    }
+vec3 pointContrib = vec3(0.0);
+for(int i = 0; i < NR_POINT_LIGHTS; i++) {
+pointContrib += color * CalcPointLight(pointLights[i], norm, FragPos);
+}
+result += pointContrib * (1.0 - spotMask);
 
-    FragColor = vec4(result, 1.0);
+result += spotContrib;
+
+if (useEmissive) {
+vec3 emissive = texture(texture_emissive1, TexCoords).rgb;
+result += emissive * emissiveColor;
+}
+
+FragColor = vec4(result, 1.0);
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos) {
-    vec3 lightDir = normalize(light.position - fragPos);
+vec3 lightDir = normalize(light.position - fragPos);
 
-    float theta = dot(lightDir, normalize(-light.direction));
-    float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+float theta = dot(lightDir, normalize(-light.direction));
+float epsilon = light.cutOff - light.outerCutOff;
+float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-    float diff = max(dot(normal, lightDir), 0.0);
+float diff = max(dot(normal, lightDir), 0.0);
 
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+float distance = length(light.position - fragPos);
+float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-    return light.color * diff * intensity * attenuation;
+return light.color * diff * intensity * attenuation;
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
-    vec3 lightDir = normalize(light.position - fragPos);
-    float diff = max(dot(normal, lightDir), 0.0);
+vec3 lightDir = normalize(light.position - fragPos);
+float diff = max(dot(normal, lightDir), 0.0);
 
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+float distance = length(light.position - fragPos);
+float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-    return light.color * diff * attenuation;
+return light.color * diff * attenuation;
 }
