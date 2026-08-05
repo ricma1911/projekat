@@ -79,10 +79,40 @@ void MainController::update() {
     }
 
     bool isTabDown = platform->key(engine::platform::KeyId::KEY_TAB).is_down();
-    if (isTabDown && !m_isTabPressedLastFrame) {
-        m_worldSettings.switch_world();
+    if (isTabDown && !m_isTabPressedLastFrame && m_transitionState == TransitionState::IDLE) {
+        m_transitionState = TransitionState::FADING_OUT;
+        m_transitionTimer = 0.0f;
     }
     m_isTabPressedLastFrame = isTabDown;
+
+    if (m_transitionState != TransitionState::IDLE) {
+        m_transitionTimer += dt;
+
+        if (m_transitionState == TransitionState::FADING_OUT) {
+            float progress = m_transitionTimer / 1.0f;
+            m_ambientFactor = glm::mix(1.0f, 0.0f, glm::clamp(progress, 0.0f, 1.0f));
+
+            if (m_transitionTimer >= 1.0f) {
+                m_ambientFactor = 0.0f;
+
+                m_worldSettings.switch_world();
+
+                m_transitionState = TransitionState::FADING_IN;
+                m_transitionTimer = 0.0f;
+
+                return;
+            }
+        }
+        else if (m_transitionState == TransitionState::FADING_IN) {
+            float progress = m_transitionTimer / 1.0f;
+            m_ambientFactor = glm::mix(0.0f, 1.0f, glm::clamp(progress, 0.0f, 1.0f));
+
+            if (m_transitionTimer >= 1.0f) {
+                m_ambientFactor = 1.0f;
+                m_transitionState = TransitionState::IDLE;
+            }
+        }
+    }
 }
 
 void MainController::setup_spot_light(engine::resources::Shader* shader) {
@@ -93,7 +123,7 @@ void MainController::setup_spot_light(engine::resources::Shader* shader) {
 
     shader->set_vec3("spotLight.position", bulb_world_pos);
     shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    shader->set_vec3("spotLight.color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().spotLightColor);
+    shader->set_vec3("spotLight.color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().spotLightColor * m_ambientFactor);
 
     shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
@@ -107,13 +137,13 @@ void MainController::setup_point_lights(engine::resources::Shader* shader) {
     shader->use();
 
     shader->set_vec3("pointLights[0].position", m_worldSettings.active_config().pointLight0Position);
-    shader->set_vec3("pointLights[0].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight0Color);
+    shader->set_vec3("pointLights[0].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight0Color * m_ambientFactor);
     shader->set_float("pointLights[0].constant", 0.05f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
 
     shader->set_vec3("pointLights[1].position",m_worldSettings.active_config().pointLight1Position);
-    shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight1Color);
+    shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight1Color * m_ambientFactor);
     shader->set_float("pointLights[1].constant", 0.05f);
     shader->set_float("pointLights[1].linear", 0.09f);
     shader->set_float("pointLights[1].quadratic", 0.032f);
@@ -135,7 +165,7 @@ void MainController::draw_car() {
     model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
     model = glm::scale(model, glm::vec3(m_worldSettings.active_config().carModelScale));
     shader->set_mat4("model", model);
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
 
     car->draw(shader);
 }
@@ -151,7 +181,7 @@ void MainController::draw_side_objects() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     shader->set_bool("useEmissive", false);
 
     const auto& positions = m_worldSettings.active_config().sideObjectPositions;
@@ -179,7 +209,7 @@ void MainController::draw_street_lamp() {
 
     textured_shader->set_mat4("projection", graphics->projection_matrix());
     textured_shader->set_mat4("view", graphics->camera()->view_matrix());
-    textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     textured_shader->set_bool("useEmissive", false);
 
     glm::vec3 lamp_pos = m_worldSettings.active_config().spotLightPosition;
@@ -203,7 +233,7 @@ void MainController::draw_street_lamp() {
     bulb_model = glm::scale(bulb_model, glm::vec3(0.33f, 0.17f, 0.33f));
 
     one_color_shader->set_mat4("model", bulb_model);
-    one_color_shader->set_vec3("color", m_worldSettings.active_config().spotLightColor);
+    one_color_shader->set_vec3("color", m_worldSettings.active_config().spotLightColor * m_ambientFactor);
 
     bulb->draw(one_color_shader);
 }
@@ -220,7 +250,7 @@ void MainController::draw_point_lamps() {
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     shader->set_bool("useEmissive", true);
 
 
@@ -240,7 +270,7 @@ void MainController::draw_point_lamps() {
         model = glm::translate(model, glm::vec3(positions[i]));
 
         shader->set_mat4("model", model);
-        shader->set_vec3("emissiveColor", colors[i]);
+        shader->set_vec3("emissiveColor", colors[i] * m_ambientFactor);
         point_lamp->draw(shader);
     }
 
@@ -263,7 +293,7 @@ void MainController::draw_platform() {
     shader->set_mat4("model", model);
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     shader->set_bool("useEmissive", false);
 
 

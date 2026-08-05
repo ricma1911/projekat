@@ -9,6 +9,13 @@
 #include <engine/core/Controller.hpp>
 #include "WorldSettings.hpp"
 
+
+enum class TransitionState {
+    IDLE,
+    FADING_OUT,
+    FADING_IN
+};
+
 class MainController : public engine::core::Controller {
 public:
     std::string_view name() const override;
@@ -32,6 +39,10 @@ private:
     void begin_draw() override;
     void draw() override;
     void end_draw() override;
+
+    TransitionState m_transitionState = TransitionState::IDLE;
+    float m_transitionTimer = 0.0f;
+    float m_ambientFactor = 1.0f; 
 };
 
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP

@@ -66,54 +66,54 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 
 void main() {
-vec3 color = texture(texture_diffuse1, TexCoords).rgb;
-vec3 norm = normalize(Normal);
+    vec3 color = texture(texture_diffuse1, TexCoords).rgb;
+    vec3 norm = normalize(Normal);
 
-vec3 result = color * globalAmbient;
+    vec3 result = color * globalAmbient;
 
-vec3 spotContrib = color * CalcSpotLight(spotLight, norm, FragPos);
+    vec3 spotContrib = color * CalcSpotLight(spotLight, norm, FragPos);
 
-vec3 lightDir = normalize(spotLight.position - FragPos);
-float theta = dot(lightDir, normalize(-spotLight.direction));
-float spotMask = clamp((theta - spotLight.outerCutOff) / (spotLight.cutOff - spotLight.outerCutOff), 0.0, 1.0);
+    vec3 lightDir = normalize(spotLight.position - FragPos);
+    float theta = dot(lightDir, normalize(-spotLight.direction));
+    float spotMask = clamp((theta - spotLight.outerCutOff) / (spotLight.cutOff - spotLight.outerCutOff), 0.0, 1.0);
 
-vec3 pointContrib = vec3(0.0);
-for(int i = 0; i < NR_POINT_LIGHTS; i++) {
-pointContrib += color * CalcPointLight(pointLights[i], norm, FragPos);
-}
-result += pointContrib * (1.0 - spotMask);
+    vec3 pointContrib = vec3(0.0);
+    for(int i = 0; i < NR_POINT_LIGHTS; i++) {
+        pointContrib += color * CalcPointLight(pointLights[i], norm, FragPos);
+    }
+    result += pointContrib * (1.0 - spotMask);
 
-result += spotContrib;
+    result += spotContrib;
 
-if (useEmissive) {
-vec3 emissive = texture(texture_emissive1, TexCoords).rgb;
-result += emissive * emissiveColor;
-}
+    if (useEmissive) {
+        vec3 emissive = texture(texture_emissive1, TexCoords).rgb;
+        result += emissive * emissiveColor;
+    }
 
-FragColor = vec4(result, 1.0);
+    FragColor = vec4(result, 1.0);
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos) {
-vec3 lightDir = normalize(light.position - fragPos);
+    vec3 lightDir = normalize(light.position - fragPos);
 
-float theta = dot(lightDir, normalize(-light.direction));
-float epsilon = light.cutOff - light.outerCutOff;
-float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-float diff = max(dot(normal, lightDir), 0.0);
+    float diff = max(dot(normal, lightDir), 0.0);
 
-float distance = length(light.position - fragPos);
-float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-return light.color * diff * intensity * attenuation;
+    return light.color * diff * intensity * attenuation;
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
-vec3 lightDir = normalize(light.position - fragPos);
-float diff = max(dot(normal, lightDir), 0.0);
+    vec3 lightDir = normalize(light.position - fragPos);
+    float diff = max(dot(normal, lightDir), 0.0);
 
-float distance = length(light.position - fragPos);
-float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-return light.color * diff * attenuation;
+    return light.color * diff * attenuation;
 }
