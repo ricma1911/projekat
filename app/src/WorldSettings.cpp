@@ -12,7 +12,9 @@ void WorldSettings::setup_worlds() {
     WorldConfig viceCity;
     viceCity.name = "Vice City";
     viceCity.carModelName = "ferrari";
+    viceCity.carModelScale = 0.3;
     viceCity.sideObjectsModelName = "palm";
+    viceCity.sideObjectsModelScale = 1.0;
     viceCity.sideObjectPositions = {
         glm::vec3(-2.0f, -1.6f, -17.0f),
         glm::vec3( 2.0f, -1.6f, -17.0f),
@@ -23,12 +25,14 @@ void WorldSettings::setup_worlds() {
     WorldConfig losSantos;
     losSantos.name = "Los Santos";
     losSantos.carModelName = "lamborghini_aventador";
-    losSantos.sideObjectsModelName = "palm";
+    losSantos.carModelScale = 0.003;
+    losSantos.sideObjectsModelName = "garbage_container";
+    losSantos.sideObjectsModelScale = 0.5;
     losSantos.sideObjectPositions = {
-        glm::vec3(-2.0f, -1.6f, -17.0f),
-        glm::vec3( 2.0f, -1.6f, -17.0f),
-        glm::vec3(-2.0f, -1.6f, -13.0f),
-        glm::vec3( 2.0f, -1.6f, -13.0f)
+        glm::vec3(-2.0f, -2.0f, -17.0f),
+        glm::vec3( 2.0f, -2.0f, -17.0f),
+        glm::vec3(-2.0f, -2.0f, -13.0f),
+        glm::vec3( 2.0f, -2.0f, -13.0f)
     };
 
     m_worlds.push_back(viceCity);

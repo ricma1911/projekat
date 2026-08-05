@@ -12,7 +12,9 @@
 struct WorldConfig {
     std::string name;
     std::string carModelName;
+    double carModelScale;
     std::string sideObjectsModelName;
+    double sideObjectsModelScale;
     std::vector<glm::vec3> sideObjectPositions;
 };
 

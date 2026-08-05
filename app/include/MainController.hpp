@@ -6,15 +6,16 @@
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
 
 #include "engine/resources/Shader.hpp"
-
-
 #include <engine/core/Controller.hpp>
+#include "WorldSettings.hpp"
 
 class MainController : public engine::core::Controller {
 public:
     std::string_view name() const override;
 
 private:
+    WorldSettings m_worldSettings;
+    bool m_isTabPressedLastFrame = false;
     float m_lightIntensity = 5.0f;
     void initialize() override;
     bool loop() override;

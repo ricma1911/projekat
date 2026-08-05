@@ -77,6 +77,12 @@ void MainController::update() {
         m_lightIntensity -= 5.0f * dt;
         if (m_lightIntensity < 0.0f) m_lightIntensity = 0.0f;
     }
+
+    bool isTabDown = platform->key(engine::platform::KeyId::KEY_TAB).is_down();
+    if (isTabDown && !m_isTabPressedLastFrame) {
+        m_worldSettings.switch_world();
+    }
+    m_isTabPressedLastFrame = isTabDown;
 }
 
 void MainController::setup_spot_light(engine::resources::Shader* shader) {
@@ -117,7 +123,7 @@ void MainController::draw_car() {
     spdlog::debug("MainController::draw_car()");
     //Treba nam model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model* car = resources->model("ferrari");
+    engine::resources::Model* car = resources->model(m_worldSettings.active_config().carModelName);
     //Treba nam shader
     engine::resources::Shader* shader = resources->shader("car");
 
@@ -127,7 +133,7 @@ void MainController::draw_car() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
+    model = glm::scale(model, glm::vec3(m_worldSettings.active_config().carModelScale));
     shader->set_mat4("model", model);
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
 
@@ -136,7 +142,7 @@ void MainController::draw_car() {
 
 void MainController::draw_side_objects() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model* side_objects = resources->model("palm");
+    engine::resources::Model* side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
 
 
     engine::resources::Shader* shader = resources->shader("textured_model");
@@ -148,16 +154,12 @@ void MainController::draw_side_objects() {
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
     shader->set_bool("useEmissive", false);
 
-    glm::vec3 positions[] = {
-        glm::vec3(-2.0f, -1.6f, -17.0f),
-        glm::vec3( 2.0f, -1.6f, -17.0f),
-        glm::vec3(-2.0f, -1.6f, -13.0f),
-        glm::vec3( 2.0f, -1.6f, -13.0f)
-    };
+    const auto& positions = m_worldSettings.active_config().sideObjectPositions;
 
     for (int i = 0; i < 4; i++) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(positions[i]));
+        model = glm::scale(model, glm::vec3(m_worldSettings.active_config().sideObjectsModelScale));
 
         shader->set_mat4("model", model);
         side_objects->draw(shader);
