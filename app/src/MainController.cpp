@@ -88,12 +88,12 @@ void MainController::update() {
 void MainController::setup_spot_light(engine::resources::Shader* shader) {
     shader->use();
 
-    glm::vec3 lamp_pos = glm::vec3(0.0f, -2.5f, -16.5f);
+    glm::vec3 lamp_pos = m_worldSettings.active_config().spotLightPosition;
     glm::vec3 bulb_world_pos = lamp_pos + glm::vec3(0.22f, 1.57f, 0.35f);
 
     shader->set_vec3("spotLight.position", bulb_world_pos);
     shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    shader->set_vec3("spotLight.color", glm::vec3(m_lightIntensity) * glm::vec3(0.0f, 0.94f, 1.0f));
+    shader->set_vec3("spotLight.color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().spotLightColor);
 
     shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
@@ -106,14 +106,14 @@ void MainController::setup_spot_light(engine::resources::Shader* shader) {
 void MainController::setup_point_lights(engine::resources::Shader* shader) {
     shader->use();
 
-    shader->set_vec3("pointLights[0].position", glm::vec3(-2.5f, -1.5f, -15.0f));
-    shader->set_vec3("pointLights[0].color", glm::vec3(m_lightIntensity) * glm::vec3(1.0f, 0.5f, 0.0f));
+    shader->set_vec3("pointLights[0].position", m_worldSettings.active_config().pointLight0Position);
+    shader->set_vec3("pointLights[0].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight0Color);
     shader->set_float("pointLights[0].constant", 0.05f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
 
-    shader->set_vec3("pointLights[1].position",glm::vec3(2.5f, -1.5f, -15.0f));
-    shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * glm::vec3(1.0f, 0.0f, 0.8f));
+    shader->set_vec3("pointLights[1].position",m_worldSettings.active_config().pointLight1Position);
+    shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight1Color);
     shader->set_float("pointLights[1].constant", 0.05f);
     shader->set_float("pointLights[1].linear", 0.09f);
     shader->set_float("pointLights[1].quadratic", 0.032f);
@@ -182,7 +182,7 @@ void MainController::draw_street_lamp() {
     textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f));
     textured_shader->set_bool("useEmissive", false);
 
-    glm::vec3 lamp_pos = glm::vec3(0.0f, -2.5f, -16.5f);
+    glm::vec3 lamp_pos = m_worldSettings.active_config().spotLightPosition;
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, lamp_pos);
@@ -203,7 +203,7 @@ void MainController::draw_street_lamp() {
     bulb_model = glm::scale(bulb_model, glm::vec3(0.33f, 0.17f, 0.33f));
 
     one_color_shader->set_mat4("model", bulb_model);
-    one_color_shader->set_vec3("color", glm::vec3(0.0f, 0.94f, 1.0f));
+    one_color_shader->set_vec3("color", m_worldSettings.active_config().spotLightColor);
 
     bulb->draw(one_color_shader);
 }
@@ -226,13 +226,13 @@ void MainController::draw_point_lamps() {
 
 
     glm::vec3 positions[] = {
-        glm::vec3(2.5f, -1.5f, -15.0f),
-        glm::vec3(-2.5f, -1.5f, -15.0f)
+        m_worldSettings.active_config().pointLight0Position,
+        m_worldSettings.active_config().pointLight1Position,
     };
 
     glm::vec3 colors[] = {
-        glm::vec3(1.0f, 0.0f, 0.8f),
-        glm::vec3(1.0f, 0.45f, 0.0f)
+        m_worldSettings.active_config().pointLight0Color,
+        m_worldSettings.active_config().pointLight1Color,
     };
 
     for (int i = 0; i < 2; i++) {

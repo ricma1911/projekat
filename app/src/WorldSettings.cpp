@@ -22,6 +22,16 @@ void WorldSettings::setup_worlds() {
         glm::vec3( 2.0f, -1.6f, -13.0f)
     };
 
+    //glm::vec3(0.0f, -2.5f, -16.5f)
+    //glm::vec3(-2.5f, -1.5f, -15.0f),
+    //glm::vec3(2.5f, -1.5f, -15.0f)
+    viceCity.spotLightColor   = glm::vec3(0.0f, 0.94f, 1.0f);
+    viceCity.spotLightPosition = glm::vec3(0.0f, -2.5f, -16.5f);
+    viceCity.pointLight0Color = glm::vec3(1.0f, 0.5f, 0.0f);
+    viceCity.pointLight0Position = glm::vec3(-2.5f, -1.5f, -15.0f);
+    viceCity.pointLight1Color = glm::vec3(1.0f, 0.0f, 0.8f);
+    viceCity.pointLight1Position = glm::vec3(2.5f, -1.5f, -15.0f);
+
     WorldConfig losSantos;
     losSantos.name = "Los Santos";
     losSantos.carModelName = "lamborghini_aventador";
@@ -34,6 +44,14 @@ void WorldSettings::setup_worlds() {
         glm::vec3(-2.0f, -2.0f, -13.0f),
         glm::vec3( 2.0f, -2.0f, -13.0f)
     };
+
+    losSantos.spotLightColor   = glm::vec3(0.5f, 0.0f, 0.9f);
+    losSantos.spotLightPosition = glm::vec3(0.0f, -2.5f, -16.5f);
+    losSantos.pointLight0Color = glm::vec3(1.0f, 0.1f, 0.0f);
+    losSantos.pointLight0Position = glm::vec3(-2.5f, -1.5f, -15.0f);
+    losSantos.pointLight1Color = glm::vec3(0.0f, 1.0f, 0.2f);
+    losSantos.pointLight1Position = glm::vec3(2.5f, -1.5f, -15.0f);
+
 
     m_worlds.push_back(viceCity);
     m_worlds.push_back(losSantos);

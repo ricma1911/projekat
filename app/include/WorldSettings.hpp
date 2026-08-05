@@ -16,6 +16,13 @@ struct WorldConfig {
     std::string sideObjectsModelName;
     double sideObjectsModelScale;
     std::vector<glm::vec3> sideObjectPositions;
+
+    glm::vec3 spotLightColor;
+    glm::vec3 spotLightPosition;
+    glm::vec3 pointLight0Color;
+    glm::vec3 pointLight0Position;
+    glm::vec3 pointLight1Color;
+    glm::vec3 pointLight1Position;
 };
 
 class WorldSettings {
