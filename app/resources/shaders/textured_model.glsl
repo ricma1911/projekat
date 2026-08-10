@@ -24,7 +24,8 @@ gl_Position = projection * view * vec4(FragPos, 1.0);
 //#shader fragment
 #version 330 core
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 in vec2 TexCoords;
 in vec3 Normal;
@@ -88,6 +89,14 @@ void main() {
     if (useEmissive) {
         vec3 emissive = texture(texture_emissive1, TexCoords).rgb;
         result += emissive * emissiveColor;
+
+        if (length(emissive) > 0.1) {
+            BrightColor = vec4(emissive * emissiveColor * 2.0, 1.0);
+        } else {
+            BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+    }else{
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
     FragColor = vec4(result, 1.0);
