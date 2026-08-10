@@ -33,6 +33,8 @@ in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_emissive1;
+uniform samplerCube depthMap;
+uniform float far_plane;
 uniform vec3 globalAmbient;
 uniform bool useEmissive;
 uniform vec3 emissiveColor;
@@ -63,6 +65,7 @@ float quadratic;
 uniform SpotLight spotLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
+float PointShadowCalculation(vec3 fragPos, vec3 lightPos);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 
@@ -80,7 +83,9 @@ void main() {
 
     vec3 pointContrib = vec3(0.0);
     for(int i = 0; i < NR_POINT_LIGHTS; i++) {
-        pointContrib += color * CalcPointLight(pointLights[i], norm, FragPos);
+        float shadow = (i == 0) ? PointShadowCalculation(FragPos, pointLights[i].position) : 0.0;
+        vec3 lightColor = color * CalcPointLight(pointLights[i], norm, FragPos);
+        pointContrib += lightColor * (1.0 - shadow);
     }
     result += pointContrib * (1.0 - spotMask);
 
@@ -100,6 +105,19 @@ void main() {
     }
 
     FragColor = vec4(result, 1.0);
+}
+
+float PointShadowCalculation(vec3 fragPos, vec3 lightPos) {
+    vec3 fragToLight = fragPos - lightPos;
+    float currentDepth = length(fragToLight);
+
+    float closestDepth = texture(depthMap, fragToLight).r;
+    closestDepth *= far_plane;
+
+    float bias = 0.15;
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos) {

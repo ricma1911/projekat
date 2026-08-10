@@ -299,10 +299,11 @@ void MainController::draw_platform() {
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     shader->set_bool("useEmissive", false);
 
-
+    m_pointShadows.bind_depth_map(10);
+    shader->set_int("depthMap", 10);
+    shader->set_float("far_plane", 25.0f);
 
     plane->draw(shader);
-
 }
 void MainController::draw_skybox() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
@@ -318,9 +319,9 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
 
-auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    
+
     auto shadowShader = resources->shader("point_shadows");
     shadowShader->use();
 
@@ -341,7 +342,6 @@ auto resources = engine::core::Controller::get<engine::resources::ResourcesContr
 
     m_pointShadows.unbind(platform->window()->width(), platform->window()->height());
 
-
     m_bloom.bind();
 
     m_pointShadows.bind_depth_map(5);
@@ -352,15 +352,13 @@ auto resources = engine::core::Controller::get<engine::resources::ResourcesContr
     carShader->use();
     carShader->set_int("depthMap", 5);
     carShader->set_float("far_plane", farPlane);
+    setup_spot_light(carShader);
+    setup_point_lights(carShader);
 
     texturedShader->use();
     texturedShader->set_int("depthMap", 5);
     texturedShader->set_float("far_plane", farPlane);
-
-    setup_spot_light(carShader);
     setup_spot_light(texturedShader);
-
-    setup_point_lights(carShader);
     setup_point_lights(texturedShader);
 
     draw_car();
@@ -369,7 +367,6 @@ auto resources = engine::core::Controller::get<engine::resources::ResourcesContr
     draw_point_lamps();
     draw_skybox();
     draw_platform();
-
 
     auto blurShader = resources->shader("blur");
     auto finalShader = resources->shader("bloom_final");
