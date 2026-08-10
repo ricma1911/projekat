@@ -27,6 +27,8 @@ void MainController::initialize() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEvenetObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
+
+    m_bloom.init(platform->window()->width(), platform->window()->height());
 }
 
 bool MainController::loop() {
@@ -309,7 +311,7 @@ void MainController::draw_skybox() {
 
 void MainController::begin_draw() {
     spdlog::debug("MainController::begin_draw()");
-    engine::graphics::OpenGL::clear_buffers();
+    m_bloom.bind();
 }
 
 
@@ -330,6 +332,11 @@ void MainController::draw() {
     draw_point_lamps();
     draw_skybox();
     draw_platform();
+
+    auto blurShader = resources->shader("blur");
+    auto finalShader = resources->shader("bloom_final");
+
+    m_bloom.render(blurShader, finalShader);
 }
 
 

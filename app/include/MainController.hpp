@@ -7,6 +7,7 @@
 
 #include "engine/resources/Shader.hpp"
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/Bloom.hpp>
 #include "WorldSettings.hpp"
 
 
@@ -42,7 +43,8 @@ private:
 
     TransitionState m_transitionState = TransitionState::IDLE;
     float m_transitionTimer = 0.0f;
-    float m_ambientFactor = 1.0f; 
+    float m_ambientFactor = 1.0f;
+    engine::graphics::Bloom m_bloom;
 };
 
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
