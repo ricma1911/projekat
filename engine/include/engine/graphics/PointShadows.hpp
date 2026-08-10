@@ -21,6 +21,7 @@ public:
     std::vector<glm::mat4> calculate_light_space_matrices(const glm::vec3& lightPos, float nearPlane, float farPlane);
 
     void bind_depth_map(uint32_t textureUnit = 0) const;
+    void bind_face(uint32_t faceIndex);
 
     [[nodiscard]] uint32_t get_depth_cubemap() const { return m_depthCubemap; }
     [[nodiscard]] uint32_t get_shadow_width() const { return m_shadowWidth; }

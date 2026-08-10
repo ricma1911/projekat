@@ -74,4 +74,12 @@ void PointShadows::bind_depth_map(uint32_t textureUnit) const {
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, m_depthCubemap);
 }
 
+void PointShadows::bind_face(uint32_t faceIndex) {
+    CHECKED_GL_CALL(glViewport, 0, 0, m_shadowWidth, m_shadowHeight);
+    CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, m_depthMapFBO);
+    CHECKED_GL_CALL(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                    GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceIndex, m_depthCubemap, 0);
+    CHECKED_GL_CALL(glClear, GL_DEPTH_BUFFER_BIT);
+}
+
 } // namespace engine::graphics
