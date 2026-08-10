@@ -15,10 +15,10 @@ uniform mat4 projection;
 
 void main()
 {
-FragPos = vec3(model * vec4(aPos, 1.0));
-Normal = mat3(transpose(inverse(model))) * aNormal;
-TexCoords = aTexCoords;
-gl_Position = projection * view * vec4(FragPos, 1.0);
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
+    TexCoords = aTexCoords;
+    gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
 //#shader fragment
@@ -33,39 +33,40 @@ in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_emissive1;
-uniform samplerCube depthMap;
+uniform samplerCube depthMap0;
+uniform samplerCube depthMap1;
 uniform float far_plane;
 uniform vec3 globalAmbient;
 uniform bool useEmissive;
 uniform vec3 emissiveColor;
 
 struct SpotLight {
-vec3 position;
-vec3 direction;
-vec3 color;
+    vec3 position;
+    vec3 direction;
+    vec3 color;
 
-float cutOff;
-float outerCutOff;
+    float cutOff;
+    float outerCutOff;
 
-float constant;
-float linear;
-float quadratic;
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 struct PointLight {
-vec3 position;
-vec3 color;
+    vec3 position;
+    vec3 color;
 
-float constant;
-float linear;
-float quadratic;
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 #define NR_POINT_LIGHTS 2
 uniform SpotLight spotLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
-float PointShadowCalculation(vec3 fragPos, vec3 lightPos);
+float PointShadowCalculation(samplerCube depthMapTex, vec3 fragPos, vec3 lightPos);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 
@@ -83,7 +84,13 @@ void main() {
 
     vec3 pointContrib = vec3(0.0);
     for(int i = 0; i < NR_POINT_LIGHTS; i++) {
-        float shadow = (i == 0) ? PointShadowCalculation(FragPos, pointLights[i].position) : 0.0;
+        float shadow = 0.0;
+        if (i == 0) {
+            shadow = PointShadowCalculation(depthMap0, FragPos, pointLights[0].position);
+        } else if (i == 1) {
+            shadow = PointShadowCalculation(depthMap1, FragPos, pointLights[1].position);
+        }
+
         vec3 lightColor = color * CalcPointLight(pointLights[i], norm, FragPos);
         pointContrib += lightColor * (1.0 - shadow);
     }
@@ -100,18 +107,18 @@ void main() {
         } else {
             BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
         }
-    }else{
+    } else {
         BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
     FragColor = vec4(result, 1.0);
 }
 
-float PointShadowCalculation(vec3 fragPos, vec3 lightPos) {
+float PointShadowCalculation(samplerCube depthMapTex, vec3 fragPos, vec3 lightPos) {
     vec3 fragToLight = fragPos - lightPos;
     float currentDepth = length(fragToLight);
 
-    float closestDepth = texture(depthMap, fragToLight).r;
+    float closestDepth = texture(depthMapTex, fragToLight).r;
     closestDepth *= far_plane;
 
     float bias = 0.15;

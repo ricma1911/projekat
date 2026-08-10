@@ -29,8 +29,8 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
 
     m_bloom.init(platform->window()->width(), platform->window()->height());
-    m_pointShadows.init(1024, 1024);
-}
+    m_pointShadows[0].init(1024, 1024);
+    m_pointShadows[1].init(1024, 1024);}
 
 bool MainController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -299,8 +299,10 @@ void MainController::draw_platform() {
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     shader->set_bool("useEmissive", false);
 
-    m_pointShadows.bind_depth_map(10);
-    shader->set_int("depthMap", 10);
+    m_pointShadows[0].bind_depth_map(5);
+    m_pointShadows[1].bind_depth_map(6);
+    shader->set_int("depthMap0", 5);
+    shader->set_int("depthMap1", 6);
     shader->set_float("far_plane", 25.0f);
 
     plane->draw(shader);
@@ -318,45 +320,54 @@ void MainController::begin_draw() {
 
 
 void MainController::draw() {
-
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
 
-    auto shadowShader = resources->shader("point_shadows");
-    shadowShader->use();
-
-    glm::vec3 lightPos = m_worldSettings.active_config().pointLight0Position;
     float farPlane = 25.0f;
     float nearPlane = 0.1f;
 
-    shadowShader->set_vec3("lightPos", lightPos);
+
+    auto shadowShader = resources->shader("point_shadows");
+    shadowShader->use();
     shadowShader->set_float("far_plane", farPlane);
 
-    auto shadowMatrices = m_pointShadows.calculate_light_space_matrices(lightPos, nearPlane, farPlane);
+    glm::vec3 lightPositions[2] = {
+        m_worldSettings.active_config().pointLight0Position,
+        m_worldSettings.active_config().pointLight1Position
+    };
 
-    for (uint32_t i = 0; i < 6; ++i) {
-        m_pointShadows.bind_face(i);
-        shadowShader->set_mat4("shadowMatrix", shadowMatrices[i]);
-        render_scene_objects(shadowShader);
+    for (int lightIdx = 0; lightIdx < 2; ++lightIdx) {
+        shadowShader->set_vec3("lightPos", lightPositions[lightIdx]);
+        auto shadowMatrices = m_pointShadows[lightIdx].calculate_light_space_matrices(lightPositions[lightIdx], nearPlane, farPlane);
+
+        for (uint32_t face = 0; face < 6; ++face) {
+            m_pointShadows[lightIdx].bind_face(face);
+            shadowShader->set_mat4("shadowMatrix", shadowMatrices[face]);
+
+            render_scene_objects(shadowShader);
+        }
+        m_pointShadows[lightIdx].unbind(platform->window()->width(), platform->window()->height());
     }
 
-    m_pointShadows.unbind(platform->window()->width(), platform->window()->height());
 
     m_bloom.bind();
 
-    m_pointShadows.bind_depth_map(5);
+    m_pointShadows[0].bind_depth_map(5);
+    m_pointShadows[1].bind_depth_map(6);
 
     auto carShader = resources->shader("car");
     auto texturedShader = resources->shader("textured_model");
 
     carShader->use();
-    carShader->set_int("depthMap", 5);
+    carShader->set_int("depthMap0", 5);
+    carShader->set_int("depthMap1", 6);
     carShader->set_float("far_plane", farPlane);
     setup_spot_light(carShader);
     setup_point_lights(carShader);
 
     texturedShader->use();
-    texturedShader->set_int("depthMap", 5);
+    texturedShader->set_int("depthMap0", 5);
+    texturedShader->set_int("depthMap1", 6);
     texturedShader->set_float("far_plane", farPlane);
     setup_spot_light(texturedShader);
     setup_point_lights(texturedShader);
@@ -370,10 +381,8 @@ void MainController::draw() {
 
     auto blurShader = resources->shader("blur");
     auto finalShader = resources->shader("bloom_final");
-
     m_bloom.render(blurShader, finalShader);
 }
-
 
 void MainController::end_draw() {
     spdlog::debug("MainController::end_draw()");

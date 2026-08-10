@@ -47,8 +47,7 @@ private:
     float m_transitionTimer = 0.0f;
     float m_ambientFactor = 1.0f;
     engine::graphics::Bloom m_bloom;
-    engine::graphics::PointShadows m_pointShadows;
-
+    engine::graphics::PointShadows m_pointShadows[2];
 };
 
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
