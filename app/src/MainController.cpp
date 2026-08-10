@@ -29,6 +29,7 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
 
     m_bloom.init(platform->window()->width(), platform->window()->height());
+    m_pointShadows.init(1024, 1024);
 }
 
 bool MainController::loop() {
@@ -316,15 +317,51 @@ void MainController::begin_draw() {
 
 
 void MainController::draw() {
-    spdlog::debug("MainController::draw()");
 
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    
+    auto shadowShader = resources->shader("point_shadows");
+    shadowShader->use();
 
-    setup_spot_light(resources->shader("car"));
-    setup_spot_light(resources->shader("textured_model"));
+    glm::vec3 lightPos = m_worldSettings.active_config().pointLight0Position;
+    float farPlane = 25.0f;
+    float nearPlane = 0.1f;
 
-    setup_point_lights(resources->shader("car"));
-    setup_point_lights(resources->shader("textured_model"));
+    shadowShader->set_vec3("lightPos", lightPos);
+    shadowShader->set_float("far_plane", farPlane);
+
+    auto shadowMatrices = m_pointShadows.calculate_light_space_matrices(lightPos, nearPlane, farPlane);
+
+    for (uint32_t i = 0; i < 6; ++i) {
+        m_pointShadows.bind_face(i);
+        shadowShader->set_mat4("shadowMatrix", shadowMatrices[i]);
+        render_scene_objects(shadowShader);
+    }
+
+    m_pointShadows.unbind(platform->window()->width(), platform->window()->height());
+
+
+    m_bloom.bind();
+
+    m_pointShadows.bind_depth_map(5);
+
+    auto carShader = resources->shader("car");
+    auto texturedShader = resources->shader("textured_model");
+
+    carShader->use();
+    carShader->set_int("depthMap", 5);
+    carShader->set_float("far_plane", farPlane);
+
+    texturedShader->use();
+    texturedShader->set_int("depthMap", 5);
+    texturedShader->set_float("far_plane", farPlane);
+
+    setup_spot_light(carShader);
+    setup_spot_light(texturedShader);
+
+    setup_point_lights(carShader);
+    setup_point_lights(texturedShader);
 
     draw_car();
     draw_side_objects();
@@ -332,6 +369,7 @@ void MainController::draw() {
     draw_point_lamps();
     draw_skybox();
     draw_platform();
+
 
     auto blurShader = resources->shader("blur");
     auto finalShader = resources->shader("bloom_final");
@@ -344,5 +382,33 @@ void MainController::end_draw() {
     spdlog::debug("MainController::end_draw()");
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
+}
+
+void MainController::render_scene_objects(engine::resources::Shader* shader) {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+    engine::resources::Model* plane = resources->model("plane");
+    glm::mat4 planeModel = glm::mat4(1.0f);
+    planeModel = glm::translate(planeModel, glm::vec3(0.0f, -2.5f, -15.0f));
+    planeModel = glm::scale(planeModel, glm::vec3(3.5f, 1.0f, 3.5f));
+    shader->set_mat4("model", planeModel);
+    plane->draw(shader);
+
+    engine::resources::Model* car = resources->model(m_worldSettings.active_config().carModelName);
+    glm::mat4 carModel = glm::mat4(1.0f);
+    carModel = glm::translate(carModel, glm::vec3(0.0f, -2.5f, -15.0f));
+    carModel = glm::scale(carModel, glm::vec3(m_worldSettings.active_config().carModelScale));
+    shader->set_mat4("model", carModel);
+    car->draw(shader);
+
+    engine::resources::Model* side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
+    const auto& positions = m_worldSettings.active_config().sideObjectPositions;
+    for (int i = 0; i < 4; i++) {
+        glm::mat4 sideModel = glm::mat4(1.0f);
+        sideModel = glm::translate(sideModel, glm::vec3(positions[i]));
+        sideModel = glm::scale(sideModel, glm::vec3(m_worldSettings.active_config().sideObjectsModelScale));
+        shader->set_mat4("model", sideModel);
+        side_objects->draw(shader);
+    }
 }
 

@@ -5,10 +5,11 @@
 #ifndef MATF_RG_PROJECT_MAINCONTROLLER_HPP
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
 
+#include "WorldSettings.hpp"
+#include "engine/graphics/PointShadows.hpp"
 #include "engine/resources/Shader.hpp"
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/Bloom.hpp>
-#include "WorldSettings.hpp"
 
 
 enum class TransitionState {
@@ -40,11 +41,14 @@ private:
     void begin_draw() override;
     void draw() override;
     void end_draw() override;
+    void render_scene_objects(engine::resources::Shader* shader);
 
     TransitionState m_transitionState = TransitionState::IDLE;
     float m_transitionTimer = 0.0f;
     float m_ambientFactor = 1.0f;
     engine::graphics::Bloom m_bloom;
+    engine::graphics::PointShadows m_pointShadows;
+
 };
 
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
