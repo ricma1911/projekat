@@ -30,8 +30,8 @@ private:
     bool loop() override;
     void update_camera();
     void update() override;
-    void setup_spot_light(engine::resources::Shader* shader);
-    void setup_point_lights(engine::resources::Shader* shader);
+    void setup_spot_light(engine::resources::Shader *shader);
+    void setup_point_lights(engine::resources::Shader *shader);
     void draw_car();
     void draw_side_objects();
     void draw_point_lamps();
@@ -41,7 +41,7 @@ private:
     void begin_draw() override;
     void draw() override;
     void end_draw() override;
-    void render_scene_objects(engine::resources::Shader* shader);
+    void render_scene_objects(engine::resources::Shader *shader);
 
     TransitionState m_transitionState = TransitionState::IDLE;
     float m_transitionTimer = 0.0f;
@@ -50,4 +50,4 @@ private:
     engine::graphics::PointShadows m_pointShadows[2];
 };
 
-#endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
+#endif//MATF_RG_PROJECT_MAINCONTROLLER_HPP

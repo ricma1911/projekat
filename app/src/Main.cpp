@@ -1,8 +1,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
-#include <engine/core/Engine.hpp>
 #include "MainApp.hpp"
-
-
+#include <engine/core/Engine.hpp>
 
 
 /**

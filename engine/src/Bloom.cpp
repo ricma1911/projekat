@@ -49,7 +49,7 @@ void Bloom::setup_buffers() {
     CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
     CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rboDepth);
 
-    uint32_t attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    uint32_t attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
     CHECKED_GL_CALL(glDrawBuffers, 2, attachments);
 
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
@@ -98,7 +98,7 @@ void Bloom::unbind() {
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
 }
 
-void Bloom::render(resources::Shader* blurShader, resources::Shader* finalShader) {
+void Bloom::render(resources::Shader *blurShader, resources::Shader *finalShader) {
     unbind();
 
     CHECKED_GL_CALL(glDisable, GL_DEPTH_TEST);
@@ -146,10 +146,26 @@ void Bloom::render(resources::Shader* blurShader, resources::Shader* finalShader
 void Bloom::render_quad() {
     if (m_quadVAO == 0) {
         float quadVertices[] = {
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                -1.0f,
+                1.0f,
+                0.0f,
+                0.0f,
+                1.0f,
+                -1.0f,
+                -1.0f,
+                0.0f,
+                0.0f,
+                0.0f,
+                1.0f,
+                1.0f,
+                0.0f,
+                1.0f,
+                1.0f,
+                1.0f,
+                -1.0f,
+                0.0f,
+                1.0f,
+                0.0f,
         };
         CHECKED_GL_CALL(glGenVertexArrays, 1, &m_quadVAO);
         CHECKED_GL_CALL(glGenBuffers, 1, &m_quadVBO);
@@ -157,13 +173,13 @@ void Bloom::render_quad() {
         CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, m_quadVBO);
         CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
         CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
-        CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
         CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
-        CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     }
     CHECKED_GL_CALL(glBindVertexArray, m_quadVAO);
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
     CHECKED_GL_CALL(glBindVertexArray, 0);
 }
 
-} // namespace engine::graphics
+}// namespace engine::graphics

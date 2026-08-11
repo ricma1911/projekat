@@ -16,16 +16,15 @@ void WorldSettings::setup_worlds() {
     viceCity.sideObjectsModelName = "palm";
     viceCity.sideObjectsModelScale = 1.0;
     viceCity.sideObjectPositions = {
-        glm::vec3(-2.0f, -1.6f, -17.0f),
-        glm::vec3( 2.0f, -1.6f, -17.0f),
-        glm::vec3(-2.0f, -1.6f, -13.0f),
-        glm::vec3( 2.0f, -1.6f, -13.0f)
-    };
+            glm::vec3(-2.0f, -1.6f, -17.0f),
+            glm::vec3(2.0f, -1.6f, -17.0f),
+            glm::vec3(-2.0f, -1.6f, -13.0f),
+            glm::vec3(2.0f, -1.6f, -13.0f)};
 
     //glm::vec3(0.0f, -2.5f, -16.5f)
     //glm::vec3(-2.5f, -1.5f, -15.0f),
     //glm::vec3(2.5f, -1.5f, -15.0f)
-    viceCity.spotLightColor   = glm::vec3(0.0f, 0.94f, 1.0f);
+    viceCity.spotLightColor = glm::vec3(0.0f, 0.94f, 1.0f);
     viceCity.spotLightPosition = glm::vec3(0.0f, -2.5f, -16.5f);
     viceCity.pointLight0Color = glm::vec3(1.0f, 0.5f, 0.0f);
     viceCity.pointLight0Position = glm::vec3(-2.5f, -1.5f, -15.0f);
@@ -39,13 +38,12 @@ void WorldSettings::setup_worlds() {
     losSantos.sideObjectsModelName = "garbage_container";
     losSantos.sideObjectsModelScale = 0.5;
     losSantos.sideObjectPositions = {
-        glm::vec3(-2.0f, -2.0f, -17.0f),
-        glm::vec3( 2.0f, -2.0f, -17.0f),
-        glm::vec3(-2.0f, -2.0f, -13.0f),
-        glm::vec3( 2.0f, -2.0f, -13.0f)
-    };
+            glm::vec3(-2.0f, -2.0f, -17.0f),
+            glm::vec3(2.0f, -2.0f, -17.0f),
+            glm::vec3(-2.0f, -2.0f, -13.0f),
+            glm::vec3(2.0f, -2.0f, -13.0f)};
 
-    losSantos.spotLightColor   = glm::vec3(0.5f, 0.0f, 0.9f);
+    losSantos.spotLightColor = glm::vec3(0.5f, 0.0f, 0.9f);
     losSantos.spotLightPosition = glm::vec3(0.0f, -2.5f, -16.5f);
     losSantos.pointLight0Color = glm::vec3(1.0f, 0.1f, 0.0f);
     losSantos.pointLight0Position = glm::vec3(-2.5f, -1.5f, -15.0f);

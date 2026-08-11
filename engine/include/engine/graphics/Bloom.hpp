@@ -14,7 +14,7 @@ public:
     void init(uint32_t width, uint32_t height);
     void bind();
     void unbind();
-    void render(resources::Shader* blurShader, resources::Shader* finalShader);
+    void render(resources::Shader *blurShader, resources::Shader *finalShader);
     void resize(uint32_t width, uint32_t height);
 
 private:
@@ -35,6 +35,6 @@ private:
     uint32_t m_quadVBO = 0;
 };
 
-} // namespace engine::graphics
+}// namespace engine::graphics
 
-#endif // ENGINE_GRAPHICS_BLOOM_HPP
+#endif// ENGINE_GRAPHICS_BLOOM_HPP

@@ -2,9 +2,9 @@
 #define ENGINE_GRAPHICS_POINT_SHADOWS_HPP
 
 #include <cstdint>
-#include <vector>
-#include <glm/glm.hpp>
 #include <engine/resources/Shader.hpp>
+#include <glm/glm.hpp>
+#include <vector>
 
 namespace engine::graphics {
 
@@ -18,7 +18,7 @@ public:
     void bind();
     void unbind(uint32_t currentWindowWidth, uint32_t currentWindowHeight);
 
-    std::vector<glm::mat4> calculate_light_space_matrices(const glm::vec3& lightPos, float nearPlane, float farPlane);
+    std::vector<glm::mat4> calculate_light_space_matrices(const glm::vec3 &lightPos, float nearPlane, float farPlane);
 
     void bind_depth_map(uint32_t textureUnit = 0) const;
     void bind_face(uint32_t faceIndex);
@@ -37,6 +37,6 @@ private:
     uint32_t m_depthCubemap = 0;
 };
 
-} // namespace engine::graphics
+}// namespace engine::graphics
 
-#endif // ENGINE_GRAPHICS_POINT_SHADOWS_HPP
+#endif// ENGINE_GRAPHICS_POINT_SHADOWS_HPP

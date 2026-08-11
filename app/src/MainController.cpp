@@ -30,7 +30,8 @@ void MainController::initialize() {
 
     m_bloom.init(platform->window()->width(), platform->window()->height());
     m_pointShadows[0].init(1024, 1024);
-    m_pointShadows[1].init(1024, 1024);}
+    m_pointShadows[1].init(1024, 1024);
+}
 
 bool MainController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -62,7 +63,6 @@ void MainController::update_camera() {
     if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
         camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
     }
-
 }
 
 void MainController::update() {
@@ -105,8 +105,7 @@ void MainController::update() {
 
                 return;
             }
-        }
-        else if (m_transitionState == TransitionState::FADING_IN) {
+        } else if (m_transitionState == TransitionState::FADING_IN) {
             float progress = m_transitionTimer / 1.0f;
             m_ambientFactor = glm::mix(0.0f, 1.0f, glm::clamp(progress, 0.0f, 1.0f));
 
@@ -118,7 +117,7 @@ void MainController::update() {
     }
 }
 
-void MainController::setup_spot_light(engine::resources::Shader* shader) {
+void MainController::setup_spot_light(engine::resources::Shader *shader) {
     shader->use();
 
     glm::vec3 lamp_pos = m_worldSettings.active_config().spotLightPosition;
@@ -136,7 +135,7 @@ void MainController::setup_spot_light(engine::resources::Shader* shader) {
     shader->set_float("spotLight.quadratic", 0.0005f);
 }
 
-void MainController::setup_point_lights(engine::resources::Shader* shader) {
+void MainController::setup_point_lights(engine::resources::Shader *shader) {
     shader->use();
 
     shader->set_vec3("pointLights[0].position", m_worldSettings.active_config().pointLight0Position);
@@ -145,7 +144,7 @@ void MainController::setup_point_lights(engine::resources::Shader* shader) {
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
 
-    shader->set_vec3("pointLights[1].position",m_worldSettings.active_config().pointLight1Position);
+    shader->set_vec3("pointLights[1].position", m_worldSettings.active_config().pointLight1Position);
     shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight1Color * m_ambientFactor);
     shader->set_float("pointLights[1].constant", 0.05f);
     shader->set_float("pointLights[1].linear", 0.09f);
@@ -156,9 +155,9 @@ void MainController::draw_car() {
     spdlog::debug("MainController::draw_car()");
     //Treba nam model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model* car = resources->model(m_worldSettings.active_config().carModelName);
+    engine::resources::Model *car = resources->model(m_worldSettings.active_config().carModelName);
     //Treba nam shader
-    engine::resources::Shader* shader = resources->shader("car");
+    engine::resources::Shader *shader = resources->shader("car");
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     shader->use();
@@ -175,10 +174,10 @@ void MainController::draw_car() {
 
 void MainController::draw_side_objects() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model* side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
+    engine::resources::Model *side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
 
 
-    engine::resources::Shader* shader = resources->shader("textured_model");
+    engine::resources::Shader *shader = resources->shader("textured_model");
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     shader->use();
@@ -187,7 +186,7 @@ void MainController::draw_side_objects() {
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
     shader->set_bool("useEmissive", false);
 
-    const auto& positions = m_worldSettings.active_config().sideObjectPositions;
+    const auto &positions = m_worldSettings.active_config().sideObjectPositions;
 
     for (int i = 0; i < 4; i++) {
         glm::mat4 model = glm::mat4(1.0f);
@@ -197,17 +196,16 @@ void MainController::draw_side_objects() {
         shader->set_mat4("model", model);
         side_objects->draw(shader);
     }
-
 }
 
 void MainController::draw_street_lamp() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-    engine::resources::Model* street_lamp = resources->model("street_lamp");
-    engine::resources::Model* bulb = resources->model("bulb");
+    engine::resources::Model *street_lamp = resources->model("street_lamp");
+    engine::resources::Model *bulb = resources->model("bulb");
 
-    engine::resources::Shader* textured_shader = resources->shader("textured_model");
+    engine::resources::Shader *textured_shader = resources->shader("textured_model");
     textured_shader->use();
 
     textured_shader->set_mat4("projection", graphics->projection_matrix());
@@ -225,7 +223,7 @@ void MainController::draw_street_lamp() {
     textured_shader->set_mat4("model", model);
     street_lamp->draw(textured_shader);
 
-    engine::resources::Shader* one_color_shader = resources->shader("one_color");
+    engine::resources::Shader *one_color_shader = resources->shader("one_color");
     one_color_shader->use();
 
     one_color_shader->set_mat4("projection", graphics->projection_matrix());
@@ -246,8 +244,8 @@ void MainController::draw_point_lamps() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-    engine::resources::Model* point_lamp = resources->model("point_lamp"); //I need model
-    engine::resources::Shader* shader = resources->shader("textured_model"); //I need shader
+    engine::resources::Model *point_lamp = resources->model("point_lamp");  //I need model
+    engine::resources::Shader *shader = resources->shader("textured_model");//I need shader
 
     shader->use();
 
@@ -257,15 +255,14 @@ void MainController::draw_point_lamps() {
     shader->set_bool("useEmissive", true);
 
 
-
     glm::vec3 positions[] = {
-        m_worldSettings.active_config().pointLight0Position,
-        m_worldSettings.active_config().pointLight1Position,
+            m_worldSettings.active_config().pointLight0Position,
+            m_worldSettings.active_config().pointLight1Position,
     };
 
     glm::vec3 colors[] = {
-        m_worldSettings.active_config().pointLight0Color,
-        m_worldSettings.active_config().pointLight1Color,
+            m_worldSettings.active_config().pointLight0Color,
+            m_worldSettings.active_config().pointLight1Color,
     };
 
     for (int i = 0; i < 2; i++) {
@@ -276,7 +273,6 @@ void MainController::draw_point_lamps() {
         shader->set_vec3("emissiveColor", colors[i] * m_ambientFactor);
         point_lamp->draw(shader);
     }
-
 }
 
 
@@ -284,8 +280,8 @@ void MainController::draw_platform() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-    engine::resources::Model* plane = resources->model("plane");
-    engine::resources::Shader* shader = resources->shader("textured_model");
+    engine::resources::Model *plane = resources->model("plane");
+    engine::resources::Shader *shader = resources->shader("textured_model");
 
     shader->use();
 
@@ -332,9 +328,8 @@ void MainController::draw() {
     shadowShader->set_float("far_plane", farPlane);
 
     glm::vec3 lightPositions[2] = {
-        m_worldSettings.active_config().pointLight0Position,
-        m_worldSettings.active_config().pointLight1Position
-    };
+            m_worldSettings.active_config().pointLight0Position,
+            m_worldSettings.active_config().pointLight1Position};
 
     for (int lightIdx = 0; lightIdx < 2; ++lightIdx) {
         shadowShader->set_vec3("lightPos", lightPositions[lightIdx]);
@@ -390,25 +385,25 @@ void MainController::end_draw() {
     platform->swap_buffers();
 }
 
-void MainController::render_scene_objects(engine::resources::Shader* shader) {
+void MainController::render_scene_objects(engine::resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
-    engine::resources::Model* plane = resources->model("plane");
+    engine::resources::Model *plane = resources->model("plane");
     glm::mat4 planeModel = glm::mat4(1.0f);
     planeModel = glm::translate(planeModel, glm::vec3(0.0f, -2.5f, -15.0f));
     planeModel = glm::scale(planeModel, glm::vec3(3.5f, 1.0f, 3.5f));
     shader->set_mat4("model", planeModel);
     plane->draw(shader);
 
-    engine::resources::Model* car = resources->model(m_worldSettings.active_config().carModelName);
+    engine::resources::Model *car = resources->model(m_worldSettings.active_config().carModelName);
     glm::mat4 carModel = glm::mat4(1.0f);
     carModel = glm::translate(carModel, glm::vec3(0.0f, -2.5f, -15.0f));
     carModel = glm::scale(carModel, glm::vec3(m_worldSettings.active_config().carModelScale));
     shader->set_mat4("model", carModel);
     car->draw(shader);
 
-    engine::resources::Model* side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
-    const auto& positions = m_worldSettings.active_config().sideObjectPositions;
+    engine::resources::Model *side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
+    const auto &positions = m_worldSettings.active_config().sideObjectPositions;
     for (int i = 0; i < 4; i++) {
         glm::mat4 sideModel = glm::mat4(1.0f);
         sideModel = glm::translate(sideModel, glm::vec3(positions[i]));
@@ -417,4 +412,3 @@ void MainController::render_scene_objects(engine::resources::Shader* shader) {
         side_objects->draw(shader);
     }
 }
-
