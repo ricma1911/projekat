@@ -23,9 +23,9 @@ public:
     std::string_view name() const override;
 
 private:
-    WorldSettings m_worldSettings;
-    bool m_isTabPressedLastFrame = false;
-    float m_lightIntensity = 5.0f;
+    WorldSettings m_world_settings;
+    bool m_is_tab_pressed_last_frame = false;
+    float m_light_intensity = 5.0f;
     void initialize() override;
     bool loop() override;
     void update_camera();
@@ -43,11 +43,11 @@ private:
     void end_draw() override;
     void render_scene_objects(engine::resources::Shader *shader);
 
-    TransitionState m_transitionState = TransitionState::IDLE;
-    float m_transitionTimer = 0.0f;
-    float m_ambientFactor = 1.0f;
+    TransitionState m_transition_state = TransitionState::IDLE;
+    float m_transition_timer = 0.0f;
+    float m_ambient_factor = 1.0f;
     engine::graphics::Bloom m_bloom;
-    engine::graphics::PointShadows m_pointShadows[2];
+    engine::graphics::PointShadows m_point_shadows[2];
 };
 
 #endif//MATF_RG_PROJECT_MAINCONTROLLER_HPP

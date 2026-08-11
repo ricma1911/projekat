@@ -14,7 +14,7 @@ public:
     void init(uint32_t width, uint32_t height);
     void bind();
     void unbind();
-    void render(resources::Shader *blurShader, resources::Shader *finalShader);
+    void render(resources::Shader *blur_shader, resources::Shader *final_shader);
     void resize(uint32_t width, uint32_t height);
 
 private:
@@ -24,15 +24,15 @@ private:
     uint32_t m_width = 800;
     uint32_t m_height = 600;
 
-    uint32_t m_hdrFBO = 0;
-    uint32_t m_colorBuffers[2] = {0, 0};
-    uint32_t m_rboDepth = 0;
+    uint32_t m_hdr_fbo = 0;
+    uint32_t m_color_buffers[2] = {0, 0};
+    uint32_t m_rbo_depth = 0;
 
-    uint32_t m_pingpongFBO[2] = {0, 0};
-    uint32_t m_pingpongColorbuffers[2] = {0, 0};
+    uint32_t m_pingpong_fbo[2] = {0, 0};
+    uint32_t m_pingpong_colorbuffers[2] = {0, 0};
 
-    uint32_t m_quadVAO = 0;
-    uint32_t m_quadVBO = 0;
+    uint32_t m_quad_vao = 0;
+    uint32_t m_quad_vbo = 0;
 };
 
 }// namespace engine::graphics

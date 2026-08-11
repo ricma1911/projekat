@@ -29,8 +29,8 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
 
     m_bloom.init(platform->window()->width(), platform->window()->height());
-    m_pointShadows[0].init(1024, 1024);
-    m_pointShadows[1].init(1024, 1024);
+    m_point_shadows[0].init(1024, 1024);
+    m_point_shadows[1].init(1024, 1024);
 }
 
 bool MainController::loop() {
@@ -72,46 +72,46 @@ void MainController::update() {
     float dt = platform->dt();
 
     if (platform->key(engine::platform::KeyId::KEY_UP).is_down()) {
-        m_lightIntensity += 5.0f * dt;
-        if (m_lightIntensity > 30.0f) m_lightIntensity = 30.0f;
+        m_light_intensity += 5.0f * dt;
+        if (m_light_intensity > 30.0f) m_light_intensity = 30.0f;
     }
 
     if (platform->key(engine::platform::KeyId::KEY_DOWN).is_down()) {
-        m_lightIntensity -= 5.0f * dt;
-        if (m_lightIntensity < 0.0f) m_lightIntensity = 0.0f;
+        m_light_intensity -= 5.0f * dt;
+        if (m_light_intensity < 0.0f) m_light_intensity = 0.0f;
     }
 
     bool isTabDown = platform->key(engine::platform::KeyId::KEY_TAB).is_down();
-    if (isTabDown && !m_isTabPressedLastFrame && m_transitionState == TransitionState::IDLE) {
-        m_transitionState = TransitionState::FADING_OUT;
-        m_transitionTimer = 0.0f;
+    if (isTabDown && !m_is_tab_pressed_last_frame && m_transition_state == TransitionState::IDLE) {
+        m_transition_state = TransitionState::FADING_OUT;
+        m_transition_timer = 0.0f;
     }
-    m_isTabPressedLastFrame = isTabDown;
+    m_is_tab_pressed_last_frame = isTabDown;
 
-    if (m_transitionState != TransitionState::IDLE) {
-        m_transitionTimer += dt;
+    if (m_transition_state != TransitionState::IDLE) {
+        m_transition_timer += dt;
 
-        if (m_transitionState == TransitionState::FADING_OUT) {
-            float progress = m_transitionTimer / 1.0f;
-            m_ambientFactor = glm::mix(1.0f, 0.0f, glm::clamp(progress, 0.0f, 1.0f));
+        if (m_transition_state == TransitionState::FADING_OUT) {
+            float progress = m_transition_timer / 1.0f;
+            m_ambient_factor = glm::mix(1.0f, 0.0f, glm::clamp(progress, 0.0f, 1.0f));
 
-            if (m_transitionTimer >= 1.0f) {
-                m_ambientFactor = 0.0f;
+            if (m_transition_timer >= 1.0f) {
+                m_ambient_factor = 0.0f;
 
-                m_worldSettings.switch_world();
+                m_world_settings.switch_world();
 
-                m_transitionState = TransitionState::FADING_IN;
-                m_transitionTimer = 0.0f;
+                m_transition_state = TransitionState::FADING_IN;
+                m_transition_timer = 0.0f;
 
                 return;
             }
-        } else if (m_transitionState == TransitionState::FADING_IN) {
-            float progress = m_transitionTimer / 1.0f;
-            m_ambientFactor = glm::mix(0.0f, 1.0f, glm::clamp(progress, 0.0f, 1.0f));
+        } else if (m_transition_state == TransitionState::FADING_IN) {
+            float progress = m_transition_timer / 1.0f;
+            m_ambient_factor = glm::mix(0.0f, 1.0f, glm::clamp(progress, 0.0f, 1.0f));
 
-            if (m_transitionTimer >= 1.0f) {
-                m_ambientFactor = 1.0f;
-                m_transitionState = TransitionState::IDLE;
+            if (m_transition_timer >= 1.0f) {
+                m_ambient_factor = 1.0f;
+                m_transition_state = TransitionState::IDLE;
             }
         }
     }
@@ -120,12 +120,12 @@ void MainController::update() {
 void MainController::setup_spot_light(engine::resources::Shader *shader) {
     shader->use();
 
-    glm::vec3 lamp_pos = m_worldSettings.active_config().spotLightPosition;
+    glm::vec3 lamp_pos = m_world_settings.active_config().spotLightPosition;
     glm::vec3 bulb_world_pos = lamp_pos + glm::vec3(0.22f, 1.57f, 0.35f);
 
     shader->set_vec3("spotLight.position", bulb_world_pos);
     shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    shader->set_vec3("spotLight.color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().spotLightColor * m_ambientFactor);
+    shader->set_vec3("spotLight.color", glm::vec3(m_light_intensity) * m_world_settings.active_config().spotLightColor * m_ambient_factor);
 
     shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
@@ -138,14 +138,14 @@ void MainController::setup_spot_light(engine::resources::Shader *shader) {
 void MainController::setup_point_lights(engine::resources::Shader *shader) {
     shader->use();
 
-    shader->set_vec3("pointLights[0].position", m_worldSettings.active_config().pointLight0Position);
-    shader->set_vec3("pointLights[0].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight0Color * m_ambientFactor);
+    shader->set_vec3("pointLights[0].position", m_world_settings.active_config().pointLight0Position);
+    shader->set_vec3("pointLights[0].color", glm::vec3(m_light_intensity) * m_world_settings.active_config().pointLight0Color * m_ambient_factor);
     shader->set_float("pointLights[0].constant", 0.05f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
 
-    shader->set_vec3("pointLights[1].position", m_worldSettings.active_config().pointLight1Position);
-    shader->set_vec3("pointLights[1].color", glm::vec3(m_lightIntensity) * m_worldSettings.active_config().pointLight1Color * m_ambientFactor);
+    shader->set_vec3("pointLights[1].position", m_world_settings.active_config().pointLight1Position);
+    shader->set_vec3("pointLights[1].color", glm::vec3(m_light_intensity) * m_world_settings.active_config().pointLight1Color * m_ambient_factor);
     shader->set_float("pointLights[1].constant", 0.05f);
     shader->set_float("pointLights[1].linear", 0.09f);
     shader->set_float("pointLights[1].quadratic", 0.032f);
@@ -155,7 +155,7 @@ void MainController::draw_car() {
     spdlog::debug("MainController::draw_car()");
     //Treba nam model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model *car = resources->model(m_worldSettings.active_config().carModelName);
+    engine::resources::Model *car = resources->model(m_world_settings.active_config().carModelName);
     //Treba nam shader
     engine::resources::Shader *shader = resources->shader("car");
 
@@ -165,16 +165,16 @@ void MainController::draw_car() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
-    model = glm::scale(model, glm::vec3(m_worldSettings.active_config().carModelScale));
+    model = glm::scale(model, glm::vec3(m_world_settings.active_config().carModelScale));
     shader->set_mat4("model", model);
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
 
     car->draw(shader);
 }
 
 void MainController::draw_side_objects() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model *side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
+    engine::resources::Model *side_objects = resources->model(m_world_settings.active_config().sideObjectsModelName);
 
 
     engine::resources::Shader *shader = resources->shader("textured_model");
@@ -183,15 +183,15 @@ void MainController::draw_side_objects() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     shader->set_bool("useEmissive", false);
 
-    const auto &positions = m_worldSettings.active_config().sideObjectPositions;
+    const auto &positions = m_world_settings.active_config().sideObjectPositions;
 
     for (int i = 0; i < 4; i++) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(positions[i]));
-        model = glm::scale(model, glm::vec3(m_worldSettings.active_config().sideObjectsModelScale));
+        model = glm::scale(model, glm::vec3(m_world_settings.active_config().sideObjectsModelScale));
 
         shader->set_mat4("model", model);
         side_objects->draw(shader);
@@ -210,10 +210,10 @@ void MainController::draw_street_lamp() {
 
     textured_shader->set_mat4("projection", graphics->projection_matrix());
     textured_shader->set_mat4("view", graphics->camera()->view_matrix());
-    textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
+    textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     textured_shader->set_bool("useEmissive", false);
 
-    glm::vec3 lamp_pos = m_worldSettings.active_config().spotLightPosition;
+    glm::vec3 lamp_pos = m_world_settings.active_config().spotLightPosition;
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, lamp_pos);
@@ -234,7 +234,7 @@ void MainController::draw_street_lamp() {
     bulb_model = glm::scale(bulb_model, glm::vec3(0.33f, 0.17f, 0.33f));
 
     one_color_shader->set_mat4("model", bulb_model);
-    one_color_shader->set_vec3("color", m_worldSettings.active_config().spotLightColor * m_ambientFactor);
+    one_color_shader->set_vec3("color", m_world_settings.active_config().spotLightColor * m_ambient_factor);
 
     bulb->draw(one_color_shader);
 }
@@ -251,18 +251,18 @@ void MainController::draw_point_lamps() {
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     shader->set_bool("useEmissive", true);
 
 
     glm::vec3 positions[] = {
-            m_worldSettings.active_config().pointLight0Position,
-            m_worldSettings.active_config().pointLight1Position,
+            m_world_settings.active_config().pointLight0Position,
+            m_world_settings.active_config().pointLight1Position,
     };
 
     glm::vec3 colors[] = {
-            m_worldSettings.active_config().pointLight0Color,
-            m_worldSettings.active_config().pointLight1Color,
+            m_world_settings.active_config().pointLight0Color,
+            m_world_settings.active_config().pointLight1Color,
     };
 
     for (int i = 0; i < 2; i++) {
@@ -270,7 +270,7 @@ void MainController::draw_point_lamps() {
         model = glm::translate(model, glm::vec3(positions[i]));
 
         shader->set_mat4("model", model);
-        shader->set_vec3("emissiveColor", colors[i] * m_ambientFactor);
+        shader->set_vec3("emissiveColor", colors[i] * m_ambient_factor);
         point_lamp->draw(shader);
     }
 }
@@ -292,11 +292,11 @@ void MainController::draw_platform() {
     shader->set_mat4("model", model);
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambientFactor);
+    shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     shader->set_bool("useEmissive", false);
 
-    m_pointShadows[0].bind_depth_map(5);
-    m_pointShadows[1].bind_depth_map(6);
+    m_point_shadows[0].bind_depth_map(5);
+    m_point_shadows[1].bind_depth_map(6);
     shader->set_int("depthMap0", 5);
     shader->set_int("depthMap1", 6);
     shader->set_float("far_plane", 25.0f);
@@ -328,27 +328,27 @@ void MainController::draw() {
     shadowShader->set_float("far_plane", farPlane);
 
     glm::vec3 lightPositions[2] = {
-            m_worldSettings.active_config().pointLight0Position,
-            m_worldSettings.active_config().pointLight1Position};
+            m_world_settings.active_config().pointLight0Position,
+            m_world_settings.active_config().pointLight1Position};
 
     for (int lightIdx = 0; lightIdx < 2; ++lightIdx) {
         shadowShader->set_vec3("lightPos", lightPositions[lightIdx]);
-        auto shadowMatrices = m_pointShadows[lightIdx].calculate_light_space_matrices(lightPositions[lightIdx], nearPlane, farPlane);
+        auto shadowMatrices = m_point_shadows[lightIdx].calculate_light_space_matrices(lightPositions[lightIdx], nearPlane, farPlane);
 
         for (uint32_t face = 0; face < 6; ++face) {
-            m_pointShadows[lightIdx].bind_face(face);
+            m_point_shadows[lightIdx].bind_face(face);
             shadowShader->set_mat4("shadowMatrix", shadowMatrices[face]);
 
             render_scene_objects(shadowShader);
         }
-        m_pointShadows[lightIdx].unbind(platform->window()->width(), platform->window()->height());
+        m_point_shadows[lightIdx].unbind(platform->window()->width(), platform->window()->height());
     }
 
 
     m_bloom.bind();
 
-    m_pointShadows[0].bind_depth_map(5);
-    m_pointShadows[1].bind_depth_map(6);
+    m_point_shadows[0].bind_depth_map(5);
+    m_point_shadows[1].bind_depth_map(6);
 
     auto carShader = resources->shader("car");
     auto texturedShader = resources->shader("textured_model");
@@ -395,19 +395,19 @@ void MainController::render_scene_objects(engine::resources::Shader *shader) {
     shader->set_mat4("model", planeModel);
     plane->draw(shader);
 
-    engine::resources::Model *car = resources->model(m_worldSettings.active_config().carModelName);
+    engine::resources::Model *car = resources->model(m_world_settings.active_config().carModelName);
     glm::mat4 carModel = glm::mat4(1.0f);
     carModel = glm::translate(carModel, glm::vec3(0.0f, -2.5f, -15.0f));
-    carModel = glm::scale(carModel, glm::vec3(m_worldSettings.active_config().carModelScale));
+    carModel = glm::scale(carModel, glm::vec3(m_world_settings.active_config().carModelScale));
     shader->set_mat4("model", carModel);
     car->draw(shader);
 
-    engine::resources::Model *side_objects = resources->model(m_worldSettings.active_config().sideObjectsModelName);
-    const auto &positions = m_worldSettings.active_config().sideObjectPositions;
+    engine::resources::Model *side_objects = resources->model(m_world_settings.active_config().sideObjectsModelName);
+    const auto &positions = m_world_settings.active_config().sideObjectPositions;
     for (int i = 0; i < 4; i++) {
         glm::mat4 sideModel = glm::mat4(1.0f);
         sideModel = glm::translate(sideModel, glm::vec3(positions[i]));
-        sideModel = glm::scale(sideModel, glm::vec3(m_worldSettings.active_config().sideObjectsModelScale));
+        sideModel = glm::scale(sideModel, glm::vec3(m_world_settings.active_config().sideObjectsModelScale));
         shader->set_mat4("model", sideModel);
         side_objects->draw(shader);
     }

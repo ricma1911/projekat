@@ -31,11 +31,11 @@ public:
 
     void switch_world();
 
-    const WorldConfig &active_config() const { return m_worlds[m_activeWorldIndex]; }
+    const WorldConfig &active_config() const { return m_worlds[m_active_world_index]; }
 
 private:
     std::vector<WorldConfig> m_worlds;
-    size_t m_activeWorldIndex = 0;
+    size_t m_active_world_index = 0;
 
     void setup_worlds();
 };

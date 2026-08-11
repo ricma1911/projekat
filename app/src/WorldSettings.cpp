@@ -56,5 +56,5 @@ void WorldSettings::setup_worlds() {
 }
 
 void WorldSettings::switch_world() {
-    m_activeWorldIndex = (m_activeWorldIndex + 1) % m_worlds.size();
+    m_active_world_index = (m_active_world_index + 1) % m_worlds.size();
 }
