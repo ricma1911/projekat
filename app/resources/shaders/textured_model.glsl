@@ -33,8 +33,7 @@ in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_emissive1;
-uniform samplerCube depthMap0;
-uniform samplerCube depthMap1;
+uniform samplerCube depthMaps[2];
 uniform float far_plane;
 uniform vec3 globalAmbient;
 uniform bool useEmissive;
@@ -83,17 +82,16 @@ void main() {
     float spotMask = clamp((theta - spotLight.outerCutOff) / (spotLight.cutOff - spotLight.outerCutOff), 0.0, 1.0);
 
     vec3 pointContrib = vec3(0.0);
-    for(int i = 0; i < NR_POINT_LIGHTS; i++) {
-        float shadow = 0.0;
-        if (i == 0) {
-            shadow = PointShadowCalculation(depthMap0, FragPos, pointLights[0].position);
-        } else if (i == 1) {
-            shadow = PointShadowCalculation(depthMap1, FragPos, pointLights[1].position);
-        }
 
-        vec3 lightColor = color * CalcPointLight(pointLights[i], norm, FragPos);
-        pointContrib += lightColor * (1.0 - shadow);
-    }
+    //shadow = PointShadowCalculation(depthMap[i], FragPos, pointLights[i].position) je bacalo gresku, ne da indeksiranje verzija koju imam
+    float shadow = PointShadowCalculation(depthMaps[0], FragPos, pointLights[0].position);
+    vec3 lightColor = color * CalcPointLight(pointLights[0], norm, FragPos);
+    pointContrib += lightColor * (1.0 - shadow);
+
+    shadow = PointShadowCalculation(depthMaps[1], FragPos, pointLights[1].position);
+    lightColor = color * CalcPointLight(pointLights[1], norm, FragPos);
+    pointContrib += lightColor * (1.0 - shadow);
+
     result += pointContrib * (1.0 - spotMask);
 
     result += spotContrib;

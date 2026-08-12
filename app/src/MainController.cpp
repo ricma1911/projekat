@@ -303,8 +303,8 @@ void MainController::draw_platform() {
 
     m_point_shadows[0].bind_depth_map(5);
     m_point_shadows[1].bind_depth_map(6);
-    shader->set_int("depthMap0", 5);
-    shader->set_int("depthMap1", 6);
+    shader->set_int("depthMaps[0]", 5);
+    shader->set_int("depthMaps[1]", 6);
     shader->set_float("far_plane", 25.0f);
 
     plane->draw(shader);
@@ -360,15 +360,15 @@ void MainController::draw() {
     auto texturedShader = resources->shader("textured_model");
 
     carShader->use();
-    carShader->set_int("depthMap0", 5);
-    carShader->set_int("depthMap1", 6);
+    carShader->set_int("depthMaps[0]", 5);
+    carShader->set_int("depthMaps[1]", 6);
     carShader->set_float("far_plane", farPlane);
     setup_spot_light(carShader);
     setup_point_lights(carShader);
 
     texturedShader->use();
-    texturedShader->set_int("depthMap0", 5);
-    texturedShader->set_int("depthMap1", 6);
+    texturedShader->set_int("depthMaps[0]", 5);
+    texturedShader->set_int("depthMaps[1]", 6);
     texturedShader->set_float("far_plane", farPlane);
     setup_spot_light(texturedShader);
     setup_point_lights(texturedShader);
