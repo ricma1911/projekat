@@ -6,15 +6,15 @@
 
 namespace engine::graphics {
 
-PointShadows::~PointShadows() {
-    if (m_depth_map_fbo) CHECKED_GL_CALL(glDeleteFramebuffers, 1, &m_depth_map_fbo);
-    if (m_depth_cubemap) CHECKED_GL_CALL(glDeleteTextures, 1, &m_depth_cubemap);
-}
-
 void PointShadows::init(uint32_t shadow_width, uint32_t shadow_height) {
     m_shadow_width = shadow_width;
     m_shadow_height = shadow_height;
     setup_buffers();
+}
+
+void PointShadows::terminate() {
+    if (m_depth_map_fbo) CHECKED_GL_CALL(glDeleteFramebuffers, 1, &m_depth_map_fbo);
+    if (m_depth_cubemap) CHECKED_GL_CALL(glDeleteTextures, 1, &m_depth_cubemap);
 }
 
 void PointShadows::setup_buffers() {

@@ -117,6 +117,12 @@ void MainController::update() {
     }
 }
 
+void MainController::terminate() {
+    m_bloom.terminate();
+    m_point_shadows[0].terminate();
+    m_point_shadows[1].terminate();
+}
+
 void MainController::setup_spot_light(engine::resources::Shader *shader) {
     shader->use();
 

@@ -30,6 +30,7 @@ private:
     bool loop() override;
     void update_camera();
     void update() override;
+    void terminate() override;
     void setup_spot_light(engine::resources::Shader *shader);
     void setup_point_lights(engine::resources::Shader *shader);
     void draw_car();

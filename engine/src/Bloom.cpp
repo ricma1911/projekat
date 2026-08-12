@@ -5,7 +5,14 @@
 
 namespace engine::graphics {
 
-Bloom::~Bloom() {
+
+void Bloom::init(uint32_t width, uint32_t height) {
+    m_width = width;
+    m_height = height;
+    setup_buffers();
+}
+
+void Bloom::terminate() {
     if (m_hdr_fbo) CHECKED_GL_CALL(glDeleteFramebuffers, 1, &m_hdr_fbo);
     if (m_color_buffers[0]) CHECKED_GL_CALL(glDeleteTextures, 2, m_color_buffers);
     if (m_rbo_depth) CHECKED_GL_CALL(glDeleteRenderbuffers, 1, &m_rbo_depth);
@@ -17,12 +24,7 @@ Bloom::~Bloom() {
         CHECKED_GL_CALL(glDeleteVertexArrays, 1, &m_quad_vao);
         CHECKED_GL_CALL(glDeleteBuffers, 1, &m_quad_vbo);
     }
-}
 
-void Bloom::init(uint32_t width, uint32_t height) {
-    m_width = width;
-    m_height = height;
-    setup_buffers();
 }
 
 void Bloom::setup_buffers() {

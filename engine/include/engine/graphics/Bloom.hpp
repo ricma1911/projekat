@@ -9,9 +9,9 @@ namespace engine::graphics {
 class Bloom {
 public:
     Bloom() = default;
-    ~Bloom();
 
     void init(uint32_t width, uint32_t height);
+    void terminate();
     void bind();
     void unbind();
     void render(resources::Shader *blur_shader, resources::Shader *final_shader);

@@ -11,9 +11,9 @@ namespace engine::graphics {
 class PointShadows {
 public:
     PointShadows() = default;
-    ~PointShadows();
 
     void init(uint32_t shadow_width = 1024, uint32_t shadow_height = 1024);
+    void terminate();
 
     void bind();
     void unbind(uint32_t current_window_width, uint32_t current_window_height);
