@@ -301,12 +301,6 @@ void MainController::draw_platform() {
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     shader->set_bool("useEmissive", false);
 
-    m_point_shadows[0].bind_depth_map(5);
-    m_point_shadows[1].bind_depth_map(6);
-    shader->set_int("depthMaps[0]", 5);
-    shader->set_int("depthMaps[1]", 6);
-    shader->set_float("far_plane", 25.0f);
-
     plane->draw(shader);
 }
 void MainController::draw_skybox() {
@@ -338,38 +332,30 @@ void MainController::draw() {
             m_world_settings.active_config().pointLight1Position};
 
     for (int lightIdx = 0; lightIdx < 2; ++lightIdx) {
-        shadowShader->set_vec3("lightPos", lightPositions[lightIdx]);
-        auto shadowMatrices = m_point_shadows[lightIdx].calculate_light_space_matrices(lightPositions[lightIdx], nearPlane, farPlane);
 
-        for (uint32_t face = 0; face < 6; ++face) {
-            m_point_shadows[lightIdx].bind_face(face);
-            shadowShader->set_mat4("shadowMatrix", shadowMatrices[face]);
-
-            render_scene_objects(shadowShader);
-        }
-        m_point_shadows[lightIdx].unbind(platform->window()->width(), platform->window()->height());
+        m_point_shadows[lightIdx].begin(
+                shadowShader,
+                lightPositions[lightIdx],
+                nearPlane,
+                farPlane,
+                platform->window()->width(),
+                platform->window()->height(),
+                [&](engine::resources::Shader *shader) {
+                    render_scene_objects(shader);
+                });
     }
 
-
     m_bloom.bind();
-
-    m_point_shadows[0].bind_depth_map(5);
-    m_point_shadows[1].bind_depth_map(6);
 
     auto carShader = resources->shader("car");
     auto texturedShader = resources->shader("textured_model");
 
-    carShader->use();
-    carShader->set_int("depthMaps[0]", 5);
-    carShader->set_int("depthMaps[1]", 6);
-    carShader->set_float("far_plane", farPlane);
+    for (int i = 0; i < 2; ++i) {
+        m_point_shadows[i].end(carShader, texturedShader, farPlane, i);
+    }
+
     setup_spot_light(carShader);
     setup_point_lights(carShader);
-
-    texturedShader->use();
-    texturedShader->set_int("depthMaps[0]", 5);
-    texturedShader->set_int("depthMaps[1]", 6);
-    texturedShader->set_float("far_plane", farPlane);
     setup_spot_light(texturedShader);
     setup_point_lights(texturedShader);
 

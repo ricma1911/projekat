@@ -1,8 +1,7 @@
-#include <glad/glad.h>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/graphics/PointShadows.hpp>
+#include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace engine::graphics {
 
@@ -82,4 +81,34 @@ void PointShadows::bind_face(uint32_t face_index) {
     CHECKED_GL_CALL(glClear, GL_DEPTH_BUFFER_BIT);
 }
 
+void PointShadows::begin(engine::resources::Shader *shadow_shader, const glm::vec3 &light_pos, float near_plane,
+                         float far_plane, uint32_t window_width, uint32_t window_height, std::function<void(engine::resources::Shader *)> draw_scene) {
+    shadow_shader->use();
+    shadow_shader->set_vec3("lightPos", light_pos);
+
+    auto shadow_matrices = calculate_light_space_matrices(light_pos, near_plane, far_plane);
+
+    for (uint32_t face = 0; face < 6; ++face) {
+        bind_face(face);
+        shadow_shader->set_mat4("shadowMatrix", shadow_matrices[face]);
+
+        draw_scene(shadow_shader);
+    }
+
+    unbind(window_width, window_height);
+}
+
+void PointShadows::end(engine::resources::Shader *shader1, engine::resources::Shader *shader2, float far_plane, int i) {
+    int slot = 5 + i;
+    bind_depth_map(slot);
+
+    std::string depth_map_name = "depthMaps[" + std::to_string(i) + "]";
+    shader1->use();
+    shader1->set_int(depth_map_name, slot);
+    shader1->set_float("far_plane", far_plane);
+
+    shader2->use();
+    shader2->set_int(depth_map_name, slot);
+    shader2->set_float("far_plane", far_plane);
+}
 }// namespace engine::graphics

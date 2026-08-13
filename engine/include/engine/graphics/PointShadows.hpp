@@ -2,9 +2,13 @@
 #define ENGINE_GRAPHICS_POINT_SHADOWS_HPP
 
 #include <cstdint>
-#include <engine/resources/Shader.hpp>
+#include <functional>
 #include <glm/glm.hpp>
 #include <vector>
+
+namespace engine::resources {
+class Shader;
+}
 
 namespace engine::graphics {
 
@@ -22,6 +26,14 @@ public:
 
     void bind_depth_map(uint32_t texture_unit = 0) const;
     void bind_face(uint32_t face_index);
+    void begin(engine::resources::Shader *shadow_shader,
+               const glm::vec3 &light_pos,
+               float near_plane,
+               float far_plane,
+               uint32_t window_width,
+               uint32_t window_height,
+               std::function<void(engine::resources::Shader *)> draw_scene);
+    void end(engine::resources::Shader *shader1, engine::resources::Shader *shader2, float far_plane, int i);
 
     [[nodiscard]] uint32_t get_depth_cubemap() const { return m_depth_cubemap; }
     [[nodiscard]] uint32_t get_shadow_width() const { return m_shadow_width; }

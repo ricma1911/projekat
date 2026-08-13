@@ -24,7 +24,6 @@ void Bloom::terminate() {
         CHECKED_GL_CALL(glDeleteVertexArrays, 1, &m_quad_vao);
         CHECKED_GL_CALL(glDeleteBuffers, 1, &m_quad_vbo);
     }
-
 }
 
 void Bloom::setup_buffers() {
