@@ -144,17 +144,15 @@ void MainController::setup_spot_light(engine::resources::Shader *shader) {
 void MainController::setup_point_lights(engine::resources::Shader *shader) {
     shader->use();
 
-    shader->set_vec3("pointLights[0].position", m_world_settings.active_config().pointLight0Position);
-    shader->set_vec3("pointLights[0].color", glm::vec3(m_light_intensity) * m_world_settings.active_config().pointLight0Color * m_ambient_factor);
-    shader->set_float("pointLights[0].constant", 0.05f);
-    shader->set_float("pointLights[0].linear", 0.09f);
-    shader->set_float("pointLights[0].quadratic", 0.032f);
+    for (int i = 0; i < m_world_settings.active_config().pointLights.size(); i++) {
+        std::string variable_name = "pointLights[" + std::to_string(i) + "]";
+        shader->set_vec3(variable_name + ".position", m_world_settings.active_config().pointLights[i].position);
+        shader->set_vec3(variable_name + ".color", glm::vec3(m_light_intensity) * m_world_settings.active_config().pointLights[i].color * m_ambient_factor);
+        shader->set_float(variable_name + ".constant", 0.05f);
+        shader->set_float(variable_name + ".linear", 0.09f);
+        shader->set_float(variable_name + ".quadratic", 0.032f);
+    }
 
-    shader->set_vec3("pointLights[1].position", m_world_settings.active_config().pointLight1Position);
-    shader->set_vec3("pointLights[1].color", glm::vec3(m_light_intensity) * m_world_settings.active_config().pointLight1Color * m_ambient_factor);
-    shader->set_float("pointLights[1].constant", 0.05f);
-    shader->set_float("pointLights[1].linear", 0.09f);
-    shader->set_float("pointLights[1].quadratic", 0.032f);
 }
 
 void MainController::draw_car() {
@@ -261,22 +259,12 @@ void MainController::draw_point_lamps() {
     shader->set_bool("useEmissive", true);
 
 
-    glm::vec3 positions[] = {
-            m_world_settings.active_config().pointLight0Position,
-            m_world_settings.active_config().pointLight1Position,
-    };
-
-    glm::vec3 colors[] = {
-            m_world_settings.active_config().pointLight0Color,
-            m_world_settings.active_config().pointLight1Color,
-    };
-
     for (int i = 0; i < 2; i++) {
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(positions[i]));
+        model = glm::translate(model, glm::vec3(m_world_settings.active_config().pointLights[i].position));
 
         shader->set_mat4("model", model);
-        shader->set_vec3("emissiveColor", colors[i] * m_ambient_factor);
+        shader->set_vec3("emissiveColor", m_world_settings.active_config().pointLights[i].color * m_ambient_factor);
         point_lamp->draw(shader);
     }
 }
@@ -327,15 +315,11 @@ void MainController::draw() {
     shadowShader->use();
     shadowShader->set_float("far_plane", farPlane);
 
-    glm::vec3 lightPositions[2] = {
-            m_world_settings.active_config().pointLight0Position,
-            m_world_settings.active_config().pointLight1Position};
-
     for (int lightIdx = 0; lightIdx < 2; ++lightIdx) {
 
         m_point_shadows[lightIdx].begin(
                 shadowShader,
-                lightPositions[lightIdx],
+                m_world_settings.active_config().pointLights[lightIdx].position,
                 nearPlane,
                 farPlane,
                 platform->window()->width(),

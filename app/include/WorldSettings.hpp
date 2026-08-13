@@ -9,6 +9,11 @@
 #include <string>
 #include <vector>
 
+struct PointLightConfig {
+    glm::vec3 position;
+    glm::vec3 color;
+};
+
 struct WorldConfig {
     std::string name;
     std::string carModelName;
@@ -19,10 +24,7 @@ struct WorldConfig {
 
     glm::vec3 spotLightColor;
     glm::vec3 spotLightPosition;
-    glm::vec3 pointLight0Color;
-    glm::vec3 pointLight0Position;
-    glm::vec3 pointLight1Color;
-    glm::vec3 pointLight1Position;
+    std::vector<PointLightConfig> pointLights;
 };
 
 class WorldSettings {
