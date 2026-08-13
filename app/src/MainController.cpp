@@ -322,8 +322,6 @@ void MainController::draw() {
                 m_world_settings.active_config().pointLights[lightIdx].position,
                 nearPlane,
                 farPlane,
-                platform->window()->width(),
-                platform->window()->height(),
                 [&](engine::resources::Shader *shader) {
                     render_scene_objects(shader);
                 });

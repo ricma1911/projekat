@@ -20,7 +20,7 @@ public:
     void terminate();
 
     void bind();
-    void unbind(uint32_t current_window_width, uint32_t current_window_height);
+    void unbind();
 
     std::vector<glm::mat4> calculate_light_space_matrices(const glm::vec3 &light_pos, float near_plane, float far_plane);
 
@@ -30,8 +30,6 @@ public:
                const glm::vec3 &light_pos,
                float near_plane,
                float far_plane,
-               uint32_t window_width,
-               uint32_t window_height,
                std::function<void(engine::resources::Shader *)> draw_scene);
     void end(engine::resources::Shader *shader1, engine::resources::Shader *shader2, float far_plane, int i);
 

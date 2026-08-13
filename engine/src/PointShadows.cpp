@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "engine/platform/PlatformController.hpp"
+
 namespace engine::graphics {
 
 void PointShadows::init(uint32_t shadow_width, uint32_t shadow_height) {
@@ -49,9 +51,10 @@ void PointShadows::bind() {
     CHECKED_GL_CALL(glClear, GL_DEPTH_BUFFER_BIT);
 }
 
-void PointShadows::unbind(uint32_t current_window_width, uint32_t current_window_height) {
+void PointShadows::unbind() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
-    CHECKED_GL_CALL(glViewport, 0, 0, current_window_width, current_window_height);
+    CHECKED_GL_CALL(glViewport, 0, 0, platform->window()->width(), platform->window()->height());
 }
 
 std::vector<glm::mat4> PointShadows::calculate_light_space_matrices(const glm::vec3 &light_pos, float near_plane, float far_plane) {
@@ -82,7 +85,7 @@ void PointShadows::bind_face(uint32_t face_index) {
 }
 
 void PointShadows::begin(engine::resources::Shader *shadow_shader, const glm::vec3 &light_pos, float near_plane,
-                         float far_plane, uint32_t window_width, uint32_t window_height, std::function<void(engine::resources::Shader *)> draw_scene) {
+                         float far_plane, std::function<void(engine::resources::Shader *)> draw_scene) {
     shadow_shader->use();
     shadow_shader->set_vec3("lightPos", light_pos);
 
@@ -95,7 +98,7 @@ void PointShadows::begin(engine::resources::Shader *shadow_shader, const glm::ve
         draw_scene(shadow_shader);
     }
 
-    unbind(window_width, window_height);
+    unbind();
 }
 
 void PointShadows::end(engine::resources::Shader *shader1, engine::resources::Shader *shader2, float far_plane, int i) {
