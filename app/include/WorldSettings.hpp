@@ -16,15 +16,15 @@ struct PointLightConfig {
 
 struct WorldConfig {
     std::string name;
-    std::string carModelName;
-    double carModelScale;
-    std::string sideObjectsModelName;
-    double sideObjectsModelScale;
-    std::vector<glm::vec3> sideObjectPositions;
+    std::string car_model_name;
+    double car_model_scale;
+    std::string side_objects_model_name;
+    double side_objects_model_scale;
+    std::vector<glm::vec3> side_object_positions;
 
-    glm::vec3 spotLightColor;
-    glm::vec3 spotLightPosition;
-    std::vector<PointLightConfig> pointLights;
+    glm::vec3 spot_light_color;
+    glm::vec3 spot_light_position;
+    std::vector<PointLightConfig> point_lights;
 };
 
 class WorldSettings {

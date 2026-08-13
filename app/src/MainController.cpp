@@ -126,12 +126,12 @@ void MainController::terminate() {
 void MainController::setup_spot_light(engine::resources::Shader *shader) {
     shader->use();
 
-    glm::vec3 lamp_pos = m_world_settings.active_config().spotLightPosition;
+    glm::vec3 lamp_pos = m_world_settings.active_config().spot_light_position;
     glm::vec3 bulb_world_pos = lamp_pos + glm::vec3(0.22f, 1.57f, 0.35f);
 
     shader->set_vec3("spotLight.position", bulb_world_pos);
     shader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    shader->set_vec3("spotLight.color", glm::vec3(m_light_intensity) * m_world_settings.active_config().spotLightColor * m_ambient_factor);
+    shader->set_vec3("spotLight.color", glm::vec3(m_light_intensity) * m_world_settings.active_config().spot_light_color * m_ambient_factor);
 
     shader->set_float("spotLight.cutOff", glm::cos(glm::radians(30.0f)));
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(40.0f)));
@@ -144,22 +144,21 @@ void MainController::setup_spot_light(engine::resources::Shader *shader) {
 void MainController::setup_point_lights(engine::resources::Shader *shader) {
     shader->use();
 
-    for (int i = 0; i < m_world_settings.active_config().pointLights.size(); i++) {
+    for (int i = 0; i < m_world_settings.active_config().point_lights.size(); i++) {
         std::string variable_name = "pointLights[" + std::to_string(i) + "]";
-        shader->set_vec3(variable_name + ".position", m_world_settings.active_config().pointLights[i].position);
-        shader->set_vec3(variable_name + ".color", glm::vec3(m_light_intensity) * m_world_settings.active_config().pointLights[i].color * m_ambient_factor);
+        shader->set_vec3(variable_name + ".position", m_world_settings.active_config().point_lights[i].position);
+        shader->set_vec3(variable_name + ".color", glm::vec3(m_light_intensity) * m_world_settings.active_config().point_lights[i].color * m_ambient_factor);
         shader->set_float(variable_name + ".constant", 0.05f);
         shader->set_float(variable_name + ".linear", 0.09f);
         shader->set_float(variable_name + ".quadratic", 0.032f);
     }
-
 }
 
 void MainController::draw_car() {
     spdlog::debug("MainController::draw_car()");
     //Treba nam model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model *car = resources->model(m_world_settings.active_config().carModelName);
+    engine::resources::Model *car = resources->model(m_world_settings.active_config().car_model_name);
     //Treba nam shader
     engine::resources::Shader *shader = resources->shader("car");
 
@@ -169,7 +168,7 @@ void MainController::draw_car() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -2.5f, -15.0f));
-    model = glm::scale(model, glm::vec3(m_world_settings.active_config().carModelScale));
+    model = glm::scale(model, glm::vec3(m_world_settings.active_config().car_model_scale));
     shader->set_mat4("model", model);
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
 
@@ -178,7 +177,7 @@ void MainController::draw_car() {
 
 void MainController::draw_side_objects() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model *side_objects = resources->model(m_world_settings.active_config().sideObjectsModelName);
+    engine::resources::Model *side_objects = resources->model(m_world_settings.active_config().side_objects_model_name);
 
 
     engine::resources::Shader *shader = resources->shader("textured_model");
@@ -190,12 +189,12 @@ void MainController::draw_side_objects() {
     shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     shader->set_bool("useEmissive", false);
 
-    const auto &positions = m_world_settings.active_config().sideObjectPositions;
+    const auto &positions = m_world_settings.active_config().side_object_positions;
 
     for (int i = 0; i < 4; i++) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(positions[i]));
-        model = glm::scale(model, glm::vec3(m_world_settings.active_config().sideObjectsModelScale));
+        model = glm::scale(model, glm::vec3(m_world_settings.active_config().side_objects_model_scale));
 
         shader->set_mat4("model", model);
         side_objects->draw(shader);
@@ -217,7 +216,7 @@ void MainController::draw_street_lamp() {
     textured_shader->set_vec3("globalAmbient", glm::vec3(0.2f, 0.2f, 0.2f) * m_ambient_factor);
     textured_shader->set_bool("useEmissive", false);
 
-    glm::vec3 lamp_pos = m_world_settings.active_config().spotLightPosition;
+    glm::vec3 lamp_pos = m_world_settings.active_config().spot_light_position;
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, lamp_pos);
@@ -238,7 +237,7 @@ void MainController::draw_street_lamp() {
     bulb_model = glm::scale(bulb_model, glm::vec3(0.33f, 0.17f, 0.33f));
 
     one_color_shader->set_mat4("model", bulb_model);
-    one_color_shader->set_vec3("color", m_world_settings.active_config().spotLightColor * m_ambient_factor);
+    one_color_shader->set_vec3("color", m_world_settings.active_config().spot_light_color * m_ambient_factor);
 
     bulb->draw(one_color_shader);
 }
@@ -261,10 +260,10 @@ void MainController::draw_point_lamps() {
 
     for (int i = 0; i < 2; i++) {
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(m_world_settings.active_config().pointLights[i].position));
+        model = glm::translate(model, glm::vec3(m_world_settings.active_config().point_lights[i].position));
 
         shader->set_mat4("model", model);
-        shader->set_vec3("emissiveColor", m_world_settings.active_config().pointLights[i].color * m_ambient_factor);
+        shader->set_vec3("emissiveColor", m_world_settings.active_config().point_lights[i].color * m_ambient_factor);
         point_lamp->draw(shader);
     }
 }
@@ -319,7 +318,7 @@ void MainController::draw() {
 
         m_point_shadows[lightIdx].begin(
                 shadowShader,
-                m_world_settings.active_config().pointLights[lightIdx].position,
+                m_world_settings.active_config().point_lights[lightIdx].position,
                 nearPlane,
                 farPlane,
                 [&](engine::resources::Shader *shader) {
@@ -369,19 +368,19 @@ void MainController::render_scene_objects(engine::resources::Shader *shader) {
     shader->set_mat4("model", planeModel);
     plane->draw(shader);
 
-    engine::resources::Model *car = resources->model(m_world_settings.active_config().carModelName);
+    engine::resources::Model *car = resources->model(m_world_settings.active_config().car_model_name);
     glm::mat4 carModel = glm::mat4(1.0f);
     carModel = glm::translate(carModel, glm::vec3(0.0f, -2.5f, -15.0f));
-    carModel = glm::scale(carModel, glm::vec3(m_world_settings.active_config().carModelScale));
+    carModel = glm::scale(carModel, glm::vec3(m_world_settings.active_config().car_model_scale));
     shader->set_mat4("model", carModel);
     car->draw(shader);
 
-    engine::resources::Model *side_objects = resources->model(m_world_settings.active_config().sideObjectsModelName);
-    const auto &positions = m_world_settings.active_config().sideObjectPositions;
+    engine::resources::Model *side_objects = resources->model(m_world_settings.active_config().side_objects_model_name);
+    const auto &positions = m_world_settings.active_config().side_object_positions;
     for (int i = 0; i < 4; i++) {
         glm::mat4 sideModel = glm::mat4(1.0f);
         sideModel = glm::translate(sideModel, glm::vec3(positions[i]));
-        sideModel = glm::scale(sideModel, glm::vec3(m_world_settings.active_config().sideObjectsModelScale));
+        sideModel = glm::scale(sideModel, glm::vec3(m_world_settings.active_config().side_objects_model_scale));
         shader->set_mat4("model", sideModel);
         side_objects->draw(shader);
     }
