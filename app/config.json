@@ -1,11 +1,41 @@
 {
   "resources": {
+
     "models": {
+      "ferrari": {
+        "path": "ferrari/Testarossa.obj",
+        "flip_uvs": true
+
+      },
+      "palm": {
+        "path": "palm_tree/palm.obj"
+      },
+      "plane": {
+          "path": "plane/plane.obj"
+      },
+      "bulb": {
+        "path": "street_lamp/bulb.obj"
+      },
+      "street_lamp": {
+        "path": "street_lamp/streetlamp.obj"
+      },
+      "point_lamp": {
+        "path": "point_lamp/point_lamp.obj",
+        "flip_uvs": true
+      },
+      "lamborghini_aventador": {
+        "path": "lamborghini_aventador/Lamborghini_Aventador.obj",
+        "flip_uvs": true
+      },
+      "garbage_container": {
+        "path": "garbage_container/garbage_container.obj",
+        "flip_uvs": true
+      }
     }
   },
   "window": {
-    "height": 600,
-    "title": "Hello, window!",
-    "width": 800
+    "height": 1200,
+    "title": "Vice City Ferrari Scene",
+    "width": 1600
   }
 }
